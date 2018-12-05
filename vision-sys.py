@@ -1,6 +1,5 @@
 ## vision-sys.py 
-  #teste git
-  #teste novo brach
+
 import cv2
 import numpy as np
 
