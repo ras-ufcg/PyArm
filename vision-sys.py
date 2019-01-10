@@ -10,11 +10,11 @@ cv2.namedWindow('filter')
 def nothing(x):
     pass
 
-cv2.createTrackbar('H_MAX','filter',0,255,nothing)
+cv2.createTrackbar('H_MAX','filter',255,255,nothing)
 cv2.createTrackbar('H_MIN','filter',0,255,nothing)
-cv2.createTrackbar('S_MAX','filter',0,255,nothing)
+cv2.createTrackbar('S_MAX','filter',255,255,nothing)
 cv2.createTrackbar('S_MIN','filter',0,255,nothing)
-cv2.createTrackbar('V_MAX','filter',0,255,nothing)
+cv2.createTrackbar('V_MAX','filter',255,255,nothing)
 cv2.createTrackbar('V_MIN','filter',0,255,nothing)
 
 while(1):
