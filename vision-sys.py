@@ -34,7 +34,7 @@ class App:
 
         # H value sliders
         self.HMax_label = Label(text = 'HMax').place(x=xpos,y=ypos) 
-        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255, showvalue = 1, label = 'test').place(x=xpos+xspace,y=ypos+yspace)
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+yspace)
         self.HMax_label = Label(text = 'HMin').place(x=xpos,y=ypos+degree) 
         self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+yspace+degree)
 
