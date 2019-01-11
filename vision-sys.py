@@ -1,26 +1,54 @@
 ## vision-sys.py 
 # version 0.2
 
-import Tkinter 
+from Tkinter import * 
 import cv2
 import PIL.Image, PIL.ImageTk
 import time
 
+xpos = 10
+ypos = 500
+xspace = 40
+yspace = -10
+degree = 50
+align = -5
+align2 = -10
+
 class App:
-    def __init__(self, window, window_title, video_source=1):
+    def __init__(self, window, window_title, video_source):
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
 
         self.vid = MyVideoCapture(self.video_source)
-        self.canvas = Tkinter.Canvas(window, width = 1080, height = 720)
+        self.canvas = Canvas(window, width = 1080, height = 650)
         self.canvas.pack()
 
-        self.btn_snapshot=Tkinter.Button(window, text="Snapshot", width=50, command=self.snapshot)
-        self.btn_snapshot.pack(anchor=Tkinter.CENTER, expand=True)
+        self.btn_snapshot=Button(window, text="Snapshot", width=50, command=self.snapshot)
+        self.btn_snapshot.pack(anchor=CENTER, expand=True)
 
         self.delay = 15
         self.update()
+
+
+
+        # H value sliders
+        self.HMax_label = Label(text = 'HMax').place(x=xpos,y=ypos) 
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255, showvalue = 1, label = 'test').place(x=xpos+xspace,y=ypos+yspace)
+        self.HMax_label = Label(text = 'HMin').place(x=xpos,y=ypos+degree) 
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+yspace+degree)
+
+        # S value sliders
+        self.HMax_label = Label(text = 'SMax').place(x=xpos,y=ypos+degree*2) 
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+yspace+degree*2)
+        self.HMax_label = Label(text = 'SMin').place(x=xpos,y=ypos+degree*3) 
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+yspace+degree*3)
+
+        # V value sliders
+        self.HMax_label = Label(text = 'VMax').place(x=xpos,y=ypos+degree*4) 
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+degree*4-10)
+        self.HMax_label = Label(text = 'VMin').place(x=xpos,y=ypos+degree*5) 
+        self.slider = Scale(self.window, orient=HORIZONTAL, length=300, from_=0, to=255).place(x=xpos+xspace,y=ypos+yspace+degree*5)
 
         self.window.mainloop()
 
@@ -36,7 +64,7 @@ class App:
 
      if ret:
          self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
-         self.canvas.create_image(0, 0, image = self.photo, anchor = Tkinter.NW)
+         self.canvas.create_image(10, 10, image = self.photo, anchor = NW)
 
      self.window.after(self.delay, self.update)
 
@@ -63,4 +91,4 @@ class MyVideoCapture:
             return (ret, None)
  
 
-App(Tkinter.Tk(),"Tkinter and OpenCV")
+App(Tk(), "Tkinter and OpenCV", 1)
