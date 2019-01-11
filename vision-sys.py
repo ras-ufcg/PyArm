@@ -24,13 +24,8 @@ class App:
         self.canvas = Canvas(window, width = 1080, height = 650)
         self.canvas.pack()
 
-        self.btn_snapshot=Button(window, text="Snapshot", width=50, command=self.snapshot)
-        self.btn_snapshot.pack(anchor=CENTER, expand=True)
-
         self.delay = 15
         self.update()
-
-
 
         # H value sliders
         self.HMax_label = Label(text = 'HMax').place(x=xpos,y=ypos) 
@@ -52,12 +47,6 @@ class App:
 
         self.window.mainloop()
 
-    def snapshot(self):
-        # Get a frame from the video source
-        ret, frame = self.vid.get_frame()
-
-        if ret:
-            cv2.imwrite("frame-" + time.strftime("%d-%m-%Y-%H-%M-%S") + ".jpg", cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
     def update(self):
      # Get a frame from the video source
      ret, frame = self.vid.get_frame()
