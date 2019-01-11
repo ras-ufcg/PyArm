@@ -14,8 +14,8 @@ cap = cv2.VideoCapture(1)
 
 cv2.namedWindow('filter')
 
-# os track bar, por padrão chamam uma funcao sempre que mudam de valor
-# nesse caso, não queremos nenhuma acao especifica, então chamaremaos a funcao abaixo 
+# os track bar, por padrao chamam uma funcao sempre que mudam de valor
+# nesse caso, nao queremos nenhuma acao especifica, entao chamaremaos a funcao abaixo 
 
 def nothing(x):
     pass
@@ -30,12 +30,12 @@ cv2.createTrackbar('V_MIN','filter',0,255,nothing)
 while(1):
 
     # a funcao read() retorna dois valores, ret e frame 
-    # ret é um valor logico que é verdade quando ocorre a captura de um frame corretamente
-    # frame é a matriz com a imagem capturada
+    # ret eh um valor logico que eh verdade quando ocorre a captura de um frame corretamente
+    # frame eh a matriz com a imagem capturada
 
     ret, frame = cap.read()
 
-    # mudando o color space para trabalhar com o padrao HSV que é melhor para detectar borda dos objetos
+    # mudando o color space para trabalhar com o padrao HSV que eh melhor para detectar borda dos objetos
 
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
