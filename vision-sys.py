@@ -61,9 +61,10 @@ class App:
     def update(self):
      # Get a frame from the video source
      ret, frame = self.vid.get_frame()
+     ref, frame2 = self.vid.rescale_frame(50)
 
      if ret:
-         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
+         self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame2))
          self.canvas.create_image(10, 10, image = self.photo, anchor = NW)
 
      self.window.after(self.delay, self.update)
@@ -78,6 +79,21 @@ class MyVideoCapture:
         # Get video source width and height
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+    def rescale_frame(self, percent=75):
+        if self.vid.isOpened():
+            ret, frame = self.vid.read()
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            if ret:
+                width = int(frame.shape[1] * percent/ 100)
+                height = int(frame.shape[0] * percent/ 100)
+                dim = (width, height)
+                return (ret, cv2.resize(frame, dim, interpolation =cv2.INTER_AREA))
+            else: 
+                return(ret, None)
+        else: 
+            return(ret, None)
+
 
     def get_frame(self):
         if self.vid.isOpened():
