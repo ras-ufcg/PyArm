@@ -6,13 +6,6 @@ import cv2
 import PIL.Image, PIL.ImageTk
 import time
 
-xpos = 10
-ypos = 500
-xspace = 40
-yspace = -10
-degree = 50
-align = -5
-align2 = -10
 
 class App:
     def __init__(self, window, window_title, video_source):
