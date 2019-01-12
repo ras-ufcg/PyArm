@@ -8,7 +8,7 @@ import time
 import numpy as np
 
 class App:
-    def __init__(self, window, window_title, video_source):
+    def __init__(self, window, window_title, video_source=0):
 
         self.window = window
         self.window.title(window_title)
@@ -21,14 +21,14 @@ class App:
         self.vmax = DoubleVar()
         self.vmin = DoubleVar()
 
-        self.resize_factor = 0.5
+        self.resize_factor = 0.55
         self.name = StringVar()
 
-        self.window.geometry('650x500+600+200')
+        self.window.geometry('750x600+600+200')
         self.vid = MyVideoCapture(self.video_source)
 
         self.label_RGB = Label(window, text = 'Real Time Tracking').grid(row=0,column=0)
-        self.label_Mask = Label(window, text = 'HSV Maks Veiwer').grid(row=0,column=1)
+        self.label_Mask = Label(window, text = 'Color Mask Veiwer').grid(row=0,column=1)
 
         self.canvas_rgb = Canvas(window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
         self.canvas_rgb.grid(row=1,column=0)
@@ -43,7 +43,8 @@ class App:
         self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable = self.hmax , label = 'HMax', length=300, from_=0, to=255)
         self.slider_hmax.grid(row=2, column=1)
         self.slider_hmax.set(255)
-        slider_hmin = Scale(self.window, orient=HORIZONTAL, variable = self.hmin , label = 'HMin', length=300, from_=0, to=255).grid(row=2, column=0)
+        self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable = self.hmin , label = 'HMin', length=300, from_=0, to=255).grid(row=2, column=0)
+       
         # S value sliders
         self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable = self.smax , label = 'SMax', length=300, from_=0, to=255)
         self.slider_smax.grid(row=3, column=1)
@@ -87,7 +88,7 @@ class App:
         if ret:
             self.photo_rgb = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(rgb))
             self.canvas_rgb.create_image(0, 0, image = self.photo_rgb, anchor = NW)
-            self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(res))
+            self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
             self.canvas_hsv.create_image(0, 0, image = self.photo_hsv, anchor = NW)
 
         self.window.after(self.delay, self.update)
