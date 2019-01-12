@@ -1,5 +1,20 @@
-## vision-sys.py 
-# version 0.2
+## vision-sys.py - v0.3
+# -*- coding: utf-8 -*-
+
+''' Colaboradores
+
+- Lyang Leme de Medeiros
+-
+
+'''
+
+''' Características da Versão (Beta)
+
+- Versão: 0.3
+- Conceito da GUI implementado
+- Formação de máscaras funcionando
+
+'''
 
 from Tkinter import * 
 import cv2
@@ -10,87 +25,111 @@ import numpy as np
 class App:
     def __init__(self, window, window_title, video_source=0):
 
+        ### Window Settings ###
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
+        self.window.geometry('750x600+600+200')
 
+        ### Aux Variables ###
+
+        self.delay = 15
         self.hmax = DoubleVar()
         self.hmin = DoubleVar()
         self.smax = DoubleVar()
         self.smin = DoubleVar()
         self.vmax = DoubleVar()
         self.vmin = DoubleVar()
-
         self.resize_factor = 0.55
         self.name = StringVar()
 
-        self.window.geometry('750x600+600+200')
+        ### Aux Objects ###
+
         self.vid = MyVideoCapture(self.video_source)
 
-        self.label_RGB = Label(window, text = 'Real Time Tracking').grid(row=0,column=0)
-        self.label_Mask = Label(window, text = 'Color Mask Veiwer').grid(row=0,column=1)
+        ### Widgets ###
 
-        self.canvas_rgb = Canvas(window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
-        self.canvas_rgb.grid(row=1,column=0)
+        ''' Labels '''
+        self.label_RGB = Label(self.window, text = 'Real Time Tracking')
+        self.label_Mask = Label(self.window, text = 'Color Mask Veiwer')
 
-        self.canvas_hsv = Canvas(window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
-        self.canvas_hsv.grid(row=1,column=1)
+        ''' Conteiners '''
+        self.canvas_rgb = Canvas(self.window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
+        self.canvas_hsv = Canvas(self.window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
+    
+        ''' H value sliders '''
+        self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable = self.hmax , label = 'HMax', length=300, from_=0, to=255)
+        self.slider_hmax.set(255)
+        self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable = self.hmin , label = 'HMin', length=300, from_=0, to=255)
+       
+        ''' S value sliders '''
+        self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable = self.smax , label = 'SMax', length=300, from_=0, to=255)
+        self.slider_smax.set(255)
+        self.slider_smin = Scale(self.window, orient=HORIZONTAL, variable = self.smin , label = 'SMin', length=300, from_=0, to=255)
+        
+        ''' V value sliders '''
+        self.slider_vmax = Scale(self.window, orient=HORIZONTAL, variable = self.vmax, label = 'VMax', length=300, from_=0, to=255)
+        self.slider_vmax.set(255)
+        self.slider_vmin = Scale(self.window, orient=HORIZONTAL, variable = self.vmin, label = 'VMin', length=300, from_=0, to=255)
+        
+        ''' Misc '''
+        self.name_text_box = Entry(window, textvariable=self.name)
+        self.btn_save = Button(window, text='Save', command=self.save)
+        self.btn_rst = Button(window, text='Reset Mask Values', command=self.rst)
 
-        self.delay = 15
+        ### Posicionamento ###
+
+        self.label_RGB.grid(row=0, column=0)
+        self.label_Mask.grid(row=0, column=1)
+        self.canvas_rgb.grid(row=1, column=0)
+        self.canvas_hsv.grid(row=1, column=1)
+        self.slider_hmax.grid(row=2, column=1)
+        self.slider_hmin.grid(row=2, column=0)
+        self.slider_smax.grid(row=3, column=1)
+        self.slider_smin.grid(row=3, column=0)
+        self.slider_vmax.grid(row=4, column=1)
+        self.slider_vmin.grid(row=4, column=0)
+        self.name_text_box.grid(row=5, column=0)
+        self.btn_save.grid(row=6, column=0)
+        self.btn_rst.grid(row=5,column=1) 
+        
+        ### Functions Calling ###
+
         self.update()
 
-        # H value sliders
-        self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable = self.hmax , label = 'HMax', length=300, from_=0, to=255)
-        self.slider_hmax.grid(row=2, column=1)
-        self.slider_hmax.set(255)
-        self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable = self.hmin , label = 'HMin', length=300, from_=0, to=255).grid(row=2, column=0)
-       
-        # S value sliders
-        self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable = self.smax , label = 'SMax', length=300, from_=0, to=255)
-        self.slider_smax.grid(row=3, column=1)
-        self.slider_smax.set(255)
-        self.slider_smin = Scale(self.window, orient=HORIZONTAL, variable = self.smin , label = 'SMin', length=300, from_=0, to=255).grid(row=3, column=0)
-        
-        # V value sliders
-        self.slider_vmax = Scale(self.window, orient=HORIZONTAL, variable = self.vmax, label = 'VMax', length=300, from_=0, to=255)
-        self.slider_vmax.grid(row=4, column=1)
-        self.slider_vmax.set(255)
-        self.slider_vmin = Scale(self.window, orient=HORIZONTAL, variable = self.vmin, label = 'VMin', length=300, from_=0, to=255).grid(row=4, column=0)
-        
-        self.name_text_box = Entry(window, textvariable=self.name).grid(row=5, column=0)
-
-        self.btn_save = Button(window, text='Save', command=self.save).grid(row=6, column=0)
-        self.btn_rst = Button(window, text='Reset Mask Values', command=self.rst).grid(row=5,column=1) 
-        
         self.window.mainloop()
 
+    ### Class Functions ###
+
     def save(self):
+        # construir funcao para salvar mascaras
         pass
 
     def rst(self):
+        # construir funcao para resetar valores da mascara
         pass
 
     def update(self):
-        # Get a frame from the video source
+        # Get a frame from the video source and rescale it
         ret, frame = self.vid.get_frame()
         frame = self.vid.rescale_frame(ret,frame,self.resize_factor)
-
+        # Colors Spaces Conversions
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
+        # Variables to set color mask
         upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
         lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
-
+        # Mask
         mask = cv2.inRange(hsv, lower, upper)
-
+        # Applying Mask
         res = cv2.bitwise_and(frame, frame, mask = mask)
-
+        # Convert frame to canvas obj
         if ret:
             self.photo_rgb = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(rgb))
             self.canvas_rgb.create_image(0, 0, image = self.photo_rgb, anchor = NW)
             self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
             self.canvas_hsv.create_image(0, 0, image = self.photo_hsv, anchor = NW)
-
+        # Loop Callback
         self.window.after(self.delay, self.update)
 
 class MyVideoCapture:
