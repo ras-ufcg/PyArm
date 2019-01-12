@@ -1,77 +1,128 @@
 ## vision-sys.py 
-# version 0.1
+# version 0.2
 
+from Tkinter import * 
 import cv2
+import PIL.Image, PIL.ImageTk
+import time
 import numpy as np
 
-# o parametro passado na funcao video capture serve para selecionar a entrada de video.
-# caso esteja desenvolvendo em um pc com apenas uma webcam, deve passar o paramentro '0'
-# em caso de multiplas entradas de video conectadas, o parametro deve mudar de acordo com a entrada desejada.
+class App:
+    def __init__(self, window, window_title, video_source=0):
 
-cap = cv2.VideoCapture(1)
+        self.window = window
+        self.window.title(window_title)
+        self.video_source = video_source
 
-# cria a janela onde para os track bars
+        self.hmax = DoubleVar()
+        self.hmin = DoubleVar()
+        self.smax = DoubleVar()
+        self.smin = DoubleVar()
+        self.vmax = DoubleVar()
+        self.vmin = DoubleVar()
 
-cv2.namedWindow('filter')
+        self.resize_factor = 0.55
+        self.name = StringVar()
 
-# os track bar, por padrao chamam uma funcao sempre que mudam de valor
-# nesse caso, nao queremos nenhuma acao especifica, entao chamaremaos a funcao abaixo 
+        self.window.geometry('750x600+600+200')
+        self.vid = MyVideoCapture(self.video_source)
 
-def nothing(x):
-    pass
+        self.label_RGB = Label(window, text = 'Real Time Tracking').grid(row=0,column=0)
+        self.label_Mask = Label(window, text = 'Color Mask Veiwer').grid(row=0,column=1)
 
-cv2.createTrackbar('H_MAX','filter',255,255,nothing)
-cv2.createTrackbar('H_MIN','filter',0,255,nothing)
-cv2.createTrackbar('S_MAX','filter',255,255,nothing)
-cv2.createTrackbar('S_MIN','filter',0,255,nothing)
-cv2.createTrackbar('V_MAX','filter',255,255,nothing)
-cv2.createTrackbar('V_MIN','filter',0,255,nothing)
+        self.canvas_rgb = Canvas(window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
+        self.canvas_rgb.grid(row=1,column=0)
 
-while(1):
+        self.canvas_hsv = Canvas(window, width = self.vid.width*(self.resize_factor) , height = self.vid.height*(self.resize_factor))
+        self.canvas_hsv.grid(row=1,column=1)
 
-    # a funcao read() retorna dois valores, ret e frame 
-    # ret eh um valor logico que eh verdade quando ocorre a captura de um frame corretamente
-    # frame eh a matriz com a imagem capturada
+        self.delay = 15
+        self.update()
 
-    ret, frame = cap.read()
+        # H value sliders
+        self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable = self.hmax , label = 'HMax', length=300, from_=0, to=255)
+        self.slider_hmax.grid(row=2, column=1)
+        self.slider_hmax.set(255)
+        self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable = self.hmin , label = 'HMin', length=300, from_=0, to=255).grid(row=2, column=0)
+       
+        # S value sliders
+        self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable = self.smax , label = 'SMax', length=300, from_=0, to=255)
+        self.slider_smax.grid(row=3, column=1)
+        self.slider_smax.set(255)
+        self.slider_smin = Scale(self.window, orient=HORIZONTAL, variable = self.smin , label = 'SMin', length=300, from_=0, to=255).grid(row=3, column=0)
+        
+        # V value sliders
+        self.slider_vmax = Scale(self.window, orient=HORIZONTAL, variable = self.vmax, label = 'VMax', length=300, from_=0, to=255)
+        self.slider_vmax.grid(row=4, column=1)
+        self.slider_vmax.set(255)
+        self.slider_vmin = Scale(self.window, orient=HORIZONTAL, variable = self.vmin, label = 'VMin', length=300, from_=0, to=255).grid(row=4, column=0)
+        
+        self.name_text_box = Entry(window, textvariable=self.name).grid(row=5, column=0)
 
-    # mudando o color space para trabalhar com o padrao HSV que eh melhor para detectar borda dos objetos
+        self.btn_save = Button(window, text='Save', command=self.save).grid(row=6, column=0)
+        self.btn_rst = Button(window, text='Reset Mask Values', command=self.rst).grid(row=5,column=1) 
+        
+        self.window.mainloop()
 
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    
-    # pega a posicao dos cursores nas track bars
+    def save(self):
+        pass
 
-    H = cv2.getTrackbarPos('H_MAX','filter')
-    S = cv2.getTrackbarPos('S_MAX','filter')
-    V = cv2.getTrackbarPos('V_MAX','filter')
+    def rst(self):
+        pass
 
-    h = cv2.getTrackbarPos('H_MIN','filter') 
-    s = cv2.getTrackbarPos('S_MIN','filter')
-    v = cv2.getTrackbarPos('V_MIN','filter')
+    def update(self):
+        # Get a frame from the video source
+        ret, frame = self.vid.get_frame()
+        frame = self.vid.rescale_frame(ret,frame,self.resize_factor)
 
-    # representa os valores maximos e minimo hsv em duas variaveis para gerar mascara para o video
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    upper = np.array([H,S,V])
-    lower = np.array([h,s,v])
+        upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
+        lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
 
-    # gera a mascara 
+        mask = cv2.inRange(hsv, lower, upper)
 
-    mask = cv2.inRange(hsv, lower, upper)
+        res = cv2.bitwise_and(frame, frame, mask = mask)
 
-    # faz um and bit a bit entre a mascara e o video original para recortar a cor desejada
+        if ret:
+            self.photo_rgb = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(rgb))
+            self.canvas_rgb.create_image(0, 0, image = self.photo_rgb, anchor = NW)
+            self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
+            self.canvas_hsv.create_image(0, 0, image = self.photo_hsv, anchor = NW)
 
-    res = cv2.bitwise_and(frame,frame, mask= mask)
+        self.window.after(self.delay, self.update)
 
-    # mostra os frames em janelas separadas
+class MyVideoCapture:
+    def __init__(self, video_source=0):
+        # Open the video source
+        self.vid = cv2.VideoCapture(video_source)
+        if not self.vid.isOpened():
+            raise ValueError("Unable to open video source", video_source)
 
-    cv2.imshow('BRG Image', frame)
-    cv2.imshow('HSV Image', hsv)
-    cv2.imshow('Result', res)
-    
-    # pressione 'Esc' para sair
+        # Get video source width and height
+        self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-    k = cv2.waitKey(5) & 0xFF
-    if k == 27:
-        break
+    def rescale_frame(self, ret, frame, percent=75):
+        if ret:
+            width = int(frame.shape[1] * percent)
+            height = int(frame.shape[0] * percent)
+            dim = (width, height)
+            return cv2.resize(frame, dim, interpolation =cv2.INTER_AREA)
+        else: 
+            return None
 
-cv2.destroyAllWindows()
+    def get_frame(self):
+        if self.vid.isOpened():
+            ret, frame = self.vid.read()
+            if ret:
+                # Return a boolean success flag and the current frame converted to BGR
+                return (ret, frame)
+            else:
+                return (ret, None)
+        else:
+            return (ret, None)
+ 
+
+App(Tk(), "Tkinter and OpenCV", 1)
