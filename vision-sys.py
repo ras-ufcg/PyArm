@@ -112,7 +112,12 @@ class App:
         pass
 
     def rst(self):
-        # construir funcao para resetar valores da mascara
+        self.slider_hmax.set(255)
+        self.slider_smax.set(255)
+        self.slider_vmax.set(255)
+        self.slider_hmin.set(0)
+        self.slider_smin.set(0)
+        self.slider_vmin.set(0)
         pass
 
     def update(self):
