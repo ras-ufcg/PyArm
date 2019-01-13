@@ -11,10 +11,20 @@
 ''' Características da Versão (Beta)
 
 - Versão: 0.4
+<<<<<<< HEAD
 - Marcação de objetos com caixas delimitadoras
 - Exibição de seus respectivos centróides na tela de Real Time Tracking
 - Atribuição de Ids parara cada objeto
 - 
+=======
+- Rastreamento de únicos (vários objetos de cores diferentes)
+    - Aplicar rotinas de diminuição de ruído para melhorar máscaras
+    - Encontrar contornos nas máscaras definidas
+    - Encontar o maior contorno definido
+    - Calcular o centróide do contorno
+    - Traçar uma caixa de marcação 
+    - Exibição de seus respectivos centróides na tela de Real Time Tracking
+>>>>>>> real-time-tracking
 
 '''
 
