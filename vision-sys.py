@@ -1,4 +1,4 @@
-## vision-sys.py - v0.3
+## vision-sys.py - v0.4
 # -*- coding: utf-8 -*-
 
 ''' Colaboradores
@@ -10,9 +10,11 @@
 
 ''' Características da Versão (Beta)
 
-- Versão: 0.3
-- Conceito da GUI implementado
-- Formação de máscaras funcionando
+- Versão: 0.4
+- Marcação de objetos com caixas delimitadoras
+- Exibição de seus respectivos centróides na tela de Real Time Tracking
+- Atribuição de Ids parara cada objeto
+- 
 
 '''
 
@@ -26,6 +28,7 @@ class App:
     def __init__(self, window, window_title, video_source=0):
 
         ### Window Settings ###
+
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
