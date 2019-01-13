@@ -11,20 +11,10 @@
 ''' Características da Versão (Beta)
 
 - Versão: 0.4
-<<<<<<< HEAD
-- Marcação de objetos com caixas delimitadoras
-- Exibição de seus respectivos centróides na tela de Real Time Tracking
-- Atribuição de Ids parara cada objeto
-- 
-=======
-- Rastreamento de únicos (vários objetos de cores diferentes)
-    - Aplicar rotinas de diminuição de ruído para melhorar máscaras
-    - Encontrar contornos nas máscaras definidas
-    - Encontar o maior contorno definido
-    - Calcular o centróide do contorno
+    - Aplicar rotinas de diminuição de ruído para melhorar máscaras - OK
+    - Encontrar contornos nas máscaras definidas - OK
+    - Calcular o centróide do contorno e exibir no video - OK
     - Traçar uma caixa de marcação 
-    - Exibição de seus respectivos centróides na tela de Real Time Tracking
->>>>>>> real-time-tracking
 
 '''
 
@@ -47,13 +37,13 @@ class App:
         ### Aux Variables ###
 
         self.delay = 15
+        self.resize_factor = 0.55
         self.hmax = DoubleVar()
         self.hmin = DoubleVar()
         self.smax = DoubleVar()
         self.smin = DoubleVar()
         self.vmax = DoubleVar()
         self.vmin = DoubleVar()
-        self.resize_factor = 0.55
         self.name = StringVar()
 
         ### Aux Objects ###
@@ -126,9 +116,11 @@ class App:
         # Get a frame from the video source and rescale it
         ret, frame = self.vid.get_frame()
         frame = self.vid.rescale_frame(ret,frame,self.resize_factor)
-        # Colors Spaces Conversions
+        # Gaussian Blur on frame to reduce noise and details, it makes easyer to find especifcs contours 
+        blur = cv2.GaussianBlur(frame, (5, 5), 0)
+        # Colors Spaces conversions
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
         # Variables to set color mask
         upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
         lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
@@ -136,6 +128,23 @@ class App:
         mask = cv2.inRange(hsv, lower, upper)
         # Applying Mask
         res = cv2.bitwise_and(frame, frame, mask = mask)
+        # Fiding contours
+        kernel = np.ones((5,5), np.uint8) 
+        dilated = cv2.dilate(mask, kernel, iterations=1)
+        im2, contours, hierarchy = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        # Drawing contours
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            M = cv2.moments(contour)
+            if (M['m00'] != 0):
+                cx = int(M['m10']/M['m00'])
+                cy = int(M['m01']/M['m00'])
+                centroid_str = '('+str(cx)+','+str(cy)+')'
+                cv2.circle(res,(cx,cy), 3, (255,0,255), -1)
+                cv2.putText(res, centroid_str, (cx+5,cy+5), cv2.FONT_HERSHEY_PLAIN, 0.6,(255,255,255),1,cv2.LINE_AA)
+            if area > 5000:
+                cv2.drawContours(res, contour, -1, (0, 255, 200), 3)
+
         # Convert frame to canvas obj
         if ret:
             self.photo_rgb = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(rgb))
@@ -177,4 +186,4 @@ class MyVideoCapture:
             return (ret, None)
  
 
-App(Tk(), "Tkinter and OpenCV", 1)
+App(Tk(), "VERA Vision System - v0.4", 1)
