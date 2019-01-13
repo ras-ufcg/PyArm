@@ -119,12 +119,24 @@ class App:
         # Get a frame from the video source and rescale it
         ret, frame = self.vid.get_frame()
         frame = self.vid.rescale_frame(ret,frame,self.resize_factor)
-        
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
+        res = self.frame_prcess(frame)
+
+        # Convert frame to canvas obj
+        if ret:
+            self.photo_rgb = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(rgb))
+            self.canvas_rgb.create_image(0, 0, image = self.photo_rgb, anchor = NW)
+            self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
+            self.canvas_hsv.create_image(0, 0, image = self.photo_hsv, anchor = NW)
+            
+        # Loop Callback
+        self.window.after(self.delay, self.update)
+
+    def frame_prcess(self, frame):
         # Gaussian Blur on frame to reduce noise and details, it makes easyer to find especifcs contours 
         blur = cv2.GaussianBlur(frame, (5, 5), 0)
-        
+
         # Colors Spaces conversions
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
         
         # Variables to set color mask
@@ -136,7 +148,7 @@ class App:
         
         # Applying Mask
         res = cv2.bitwise_and(frame, frame, mask = mask)
-        
+
         # Fiding contours
         kernel = np.ones((5,5), np.uint8) 
         dilated = cv2.dilate(mask, kernel, iterations=1)
@@ -151,7 +163,7 @@ class App:
                 cy = int(M['m01']/M['m00'])
                 centroid_str = '('+str(cx)+','+str(cy)+')'
                 
-            if area > 1000:
+            if area > 1000 and area < 60000:
                 cv2.drawContours(res, contour, -1, (150, 0, 200), 3)
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
@@ -160,18 +172,7 @@ class App:
                 cv2.putText(res, centroid_str, (cx+5,cy+5), cv2.FONT_HERSHEY_PLAIN, 1,(0,0,255),1,cv2.LINE_AA)
                 cv2.circle(res,(cx,cy), 3, (255,0,255), -1)
 
-
-        # Convert frame to canvas obj
-        if ret:
-            self.photo_rgb = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(rgb))
-            self.canvas_rgb.create_image(0, 0, image = self.photo_rgb, anchor = NW)
-            self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
-            self.canvas_hsv.create_image(0, 0, image = self.photo_hsv, anchor = NW)
-        # Loop Callback
-        self.window.after(self.delay, self.update)
-
-    def frame_prcess(self):
-        pass
+        return res
 
 class MyVideoCapture:
     def __init__(self, video_source=0):
