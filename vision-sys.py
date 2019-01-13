@@ -128,7 +128,7 @@ class App:
             self.canvas_rgb.create_image(0, 0, image = self.photo_rgb, anchor = NW)
             self.photo_hsv = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
             self.canvas_hsv.create_image(0, 0, image = self.photo_hsv, anchor = NW)
-            
+
         # Loop Callback
         self.window.after(self.delay, self.update)
 
@@ -163,7 +163,7 @@ class App:
                 cy = int(M['m01']/M['m00'])
                 centroid_str = '('+str(cx)+','+str(cy)+')'
                 
-            if area > 1000 and area < 60000:
+            if area > 700 and area < 60000:
                 cv2.drawContours(res, contour, -1, (150, 0, 200), 3)
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
