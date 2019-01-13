@@ -1,4 +1,4 @@
-## vision-sys.py - v0.3
+## vision-sys.py - v0.4
 # -*- coding: utf-8 -*-
 
 ''' Colaboradores
@@ -10,9 +10,14 @@
 
 ''' Características da Versão (Beta)
 
-- Versão: 0.3
-- Conceito da GUI implementado
-- Formação de máscaras funcionando
+- Versão: 0.4
+- Rastreamento de únicos (vários objetos de cores diferentes)
+    - Aplicar rotinas de diminuição de ruído para melhorar máscaras
+    - Encontrar contornos nas máscaras definidas
+    - Encontar o maior contorno definido
+    - Calcular o centróide do contorno
+    - Traçar uma caixa de marcação 
+    - Exibição de seus respectivos centróides na tela de Real Time Tracking
 
 '''
 
@@ -26,6 +31,7 @@ class App:
     def __init__(self, window, window_title, video_source=0):
 
         ### Window Settings ###
+
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
