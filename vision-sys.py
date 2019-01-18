@@ -5,6 +5,7 @@ from Tkinter import *
 import cv2
 import PIL.Image
 import PIL.ImageTk
+import time
 import numpy as np
 
 ''' Colaboradores
@@ -16,11 +17,12 @@ import numpy as np
 
 ''' Características da Versão (Beta)
 
-- Versão: 0.4
-    - Aplicar rotinas de diminuição de ruído para melhorar máscaras - OK
-    - Encontrar contornos nas máscaras definidas - OK
-    - Calcular o centróide do contorno e exibir no video - OK
-    - Traçar uma caixa de marcação - OK
+- Versão: 0.5
+    - Salvar máscaras OK
+    - Recuperar máscaras salvos
+    - Mostar resultado dos máscaras salvos na telar de RTT
+    - Salvar máscaras em arquivo
+    - Recuperar máscaras de arquivos
 
 '''
 
@@ -42,13 +44,14 @@ class App:
 
         self.resize_factor = 0.55
         self.delay = 15
-        self.hmax = DoubleVar()
-        self.hmin = DoubleVar()
-        self.smax = DoubleVar()
-        self.smin = DoubleVar()
-        self.vmax = DoubleVar()
-        self.vmin = DoubleVar()
+        self.hmax = IntVar()
+        self.hmin = IntVar()
+        self.smax = IntVar()
+        self.smin = IntVar()
+        self.vmax = IntVar()
+        self.vmin = IntVar()
         self.name = StringVar()
+        self.masks = {}
 
         # # # Aux Objects # # #
 
@@ -109,16 +112,24 @@ class App:
     # # # Class Functions # # #
 
     def save(self):
-        # construir funcao para salvar mascaras
+        ''' function to save mask values '''
+        mask_value = [
+            self.hmax.get(), self.smax.get(), self.vmax.get(),
+            self.hmin.get(), self.smin.get(), self.vmin.get(),
+        ]
+        self.masks[self.name.get()] = mask_value
+        print self.masks
         pass
 
     def rst(self):
+        ''' function to reset mask values '''
         self.slider_hmax.set(255)
         self.slider_smax.set(255)
         self.slider_vmax.set(255)
         self.slider_hmin.set(0)
         self.slider_smin.set(0)
         self.slider_vmin.set(0)
+
         pass
 
     def update(self):
