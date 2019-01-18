@@ -211,9 +211,5 @@ class MyVideoCapture:
         else:
             return (ret, None)
 
-<<<<<<< HEAD
-App(Tk(), "Tkinter and OpenCV", 1)
-=======
 
 App(Tk(), "VERA Vision System - v0.4", 1)
->>>>>>> master
