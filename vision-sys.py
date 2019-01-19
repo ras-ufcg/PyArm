@@ -13,12 +13,12 @@ import numpy as np
 -
 
 '''
-
+__version__ = '0.5'
 ''' Características da Versão (Beta)
 
 - Versão: 0.5
     - Salvar máscaras OK
-    - Recuperar máscaras salvas
+    - Recuperar máscaras salvas OK
     - Mostar resultado dos máscaras salvos na telar de RTT
     - Salvar máscaras em arquivo
     - Recuperar máscaras de arquivos
@@ -50,7 +50,8 @@ class App:
         self.vmax = IntVar()
         self.vmin = IntVar()
         self.name = StringVar()
-        self.masks = {'amarelo': [25, 255, 186, 10, 178, 0]}
+        # self.masks = {'amarelo': [25, 255, 186, 10, 178, 0]}
+        self.masks = {}
 
         # # # Aux Objects # # #
 
@@ -117,7 +118,9 @@ class App:
             self.hmin.get(), self.smin.get(), self.vmin.get(),
         ]
         self.masks[self.name.get()] = mask_value
-        print self.masks
+        self.name.set('')
+        self.rst()
+
         pass
 
     def rst(self):
@@ -136,21 +139,22 @@ class App:
         ret, frame = self.vid.get_frame()
         frame = self.vid.rescale_frame(ret, frame, self.resize_factor)
         res = self.frame_prcess(frame)
+        rtt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
         # Checks if already have any mask save in dictionary
         if len(self.masks) != 0:
-            for value in self.masks.values():
+            for tag, value in self.masks.items():
                 blur = cv2.GaussianBlur(frame, (5, 5), 0)
                 hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
                 mask = cv2.inRange(hsv, np.array(value[3:6]), np.array(value[0:3]))
-                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                rgb = cv2.bitwise_and(rgb, rgb, mask=mask)
+                rtt = self.draw_contour(mask, rtt, tag)
         else:
+
             pass
 
         # Convert frame to canvas obj
         if ret:
-            self.photo_rgb = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(rgb))
+            self.photo_rgb = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(rtt))
             self.canvas_rgb.create_image(0, 0, image=self.photo_rgb, anchor=NW)
             self.photo_hsv = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
             self.canvas_hsv.create_image(0, 0, image=self.photo_hsv, anchor=NW)
@@ -158,7 +162,7 @@ class App:
         # Loop Callback
         self.window.after(self.delay, self.update)
 
-    def draw_contour(self, mask, res):
+    def draw_contour(self, mask, res, name=''):
         # Fiding contours
         kernel = np.ones((5, 5), np.uint8)
         dilated = cv2.dilate(mask, kernel, iterations=1)
@@ -180,6 +184,8 @@ class App:
                 box = np.int0(box)
                 cv2.drawContours(res, [box], 0, (100, 255, 200), 3)
                 cv2.putText(res, centroid_str, (cx + 5, cy + 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1, cv2.LINE_AA)
+                if name != '':
+                    cv2.putText(res, name, (cx + 5, cy + 20), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1, cv2.LINE_AA)
                 cv2.circle(res, (cx, cy), 3, (255, 0, 255), -1)
         return res
 
@@ -236,4 +242,4 @@ class MyVideoCapture:
             return (ret, None)
 
 
-App(Tk(), "VERA Vision System - v0.4", 1)
+App(Tk(), "VERA Vision System - " + __version__, 1)
