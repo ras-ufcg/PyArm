@@ -5,7 +5,6 @@ from Tkinter import *
 import cv2
 import PIL.Image
 import PIL.ImageTk
-import time
 import numpy as np
 
 ''' Colaboradores
@@ -19,7 +18,7 @@ import numpy as np
 
 - Versão: 0.5
     - Salvar máscaras OK
-    - Recuperar máscaras salvos
+    - Recuperar máscaras salvas
     - Mostar resultado dos máscaras salvos na telar de RTT
     - Salvar máscaras em arquivo
     - Recuperar máscaras de arquivos
@@ -51,7 +50,7 @@ class App:
         self.vmax = IntVar()
         self.vmin = IntVar()
         self.name = StringVar()
-        self.masks = {}
+        self.masks = {'amarelo': [25, 255, 186, 10, 178, 0]}
 
         # # # Aux Objects # # #
 
@@ -136,8 +135,18 @@ class App:
         # Get a frame from the video source and rescale it
         ret, frame = self.vid.get_frame()
         frame = self.vid.rescale_frame(ret, frame, self.resize_factor)
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         res = self.frame_prcess(frame)
+
+        # Checks if already have any mask save in dictionary
+        if len(self.masks) != 0:
+            for value in self.masks.values():
+                blur = cv2.GaussianBlur(frame, (5, 5), 0)
+                hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
+                mask = cv2.inRange(hsv, np.array(value[3:6]), np.array(value[0:3]))
+                rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                rgb = cv2.bitwise_and(rgb, rgb, mask=mask)
+        else:
+            pass
 
         # Convert frame to canvas obj
         if ret:
@@ -149,22 +158,7 @@ class App:
         # Loop Callback
         self.window.after(self.delay, self.update)
 
-    def frame_prcess(self, frame):
-        # Gaussian Blur on frame to reduce noise and details, it makes easyer to find especifcs contours
-        blur = cv2.GaussianBlur(frame, (5, 5), 0)
-
-        # Colors Spaces conversions
-        hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-        # Variables to set color mask
-        upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
-        lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
-
-        # Mask
-        mask = cv2.inRange(hsv, lower, upper)
-
-        # Applying Mask
-        res = cv2.bitwise_and(frame, frame, mask=mask)
-
+    def draw_contour(self, mask, res):
         # Fiding contours
         kernel = np.ones((5, 5), np.uint8)
         dilated = cv2.dilate(mask, kernel, iterations=1)
@@ -187,6 +181,25 @@ class App:
                 cv2.drawContours(res, [box], 0, (100, 255, 200), 3)
                 cv2.putText(res, centroid_str, (cx + 5, cy + 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1, cv2.LINE_AA)
                 cv2.circle(res, (cx, cy), 3, (255, 0, 255), -1)
+        return res
+
+    def frame_prcess(self, frame):
+        # Gaussian Blur on frame to reduce noise and details, it makes easyer to find especifcs contours
+        blur = cv2.GaussianBlur(frame, (5, 5), 0)
+
+        # Colors Spaces conversions
+        hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
+        # Variables to set color mask
+        upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
+        lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
+
+        # Mask - Os pixels dentro do range de cor ficaram com valor 1 e os demais com valor 0
+        mask = cv2.inRange(hsv, lower, upper)
+
+        # Applying Mask - Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
+        res = cv2.bitwise_and(frame, frame, mask=mask)
+
+        res = self.draw_contour(mask, res)
 
         return res
 
