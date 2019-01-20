@@ -18,11 +18,12 @@ __version__ = '0.5'
 ''' Características da Versão (Beta)
 
 - Versão: 0.5
-    - Salvar máscaras OK
-    - Recuperar máscaras salvas OK
-    - Mostar resultado dos máscaras salvos na telar de RTT OK
+    - Salvar máscaras
+    - Recuperar máscaras salvas
+    - Mostar resultado dos máscaras salvos na telar de RTT
     - Salvar máscaras em arquivo
     - Recuperar máscaras de arquivos
+    - Menu para auxíliar no gerenciamento de arquivos
 
 '''
 
@@ -122,8 +123,17 @@ class App:
 
     # # # Class Functions # # #
 
-    def load_file():
-        pass
+    def load_file(self):
+        path = tkFileDialog.askopenfilename(title='Open')
+        file = open(path, 'r')
+        for line in file.readlines():
+            tag, value = line.split()[0], line.split()[1:]
+            tag = tag[:-1]
+            new_values = []
+            for x in value:
+                x = x.strip("[],")
+                new_values.append(int(x))
+            self.masks[tag] = new_values
 
     def save_to_file(self):
         path = tkFileDialog.asksaveasfilename(
@@ -132,12 +142,12 @@ class App:
             defaultextension=".txt",
         )
 
-        file = open(path, 'w')
+        file = open(path, 'w+')
         for tag, values in self.masks.items():
             file.write(tag + ': ' + str(values) + '\n')
         file.close()
 
-    def show_about():
+    def show_about(self):
         pass
 
     def save(self):
