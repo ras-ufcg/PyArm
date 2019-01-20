@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from Tkinter import *
+import tkFileDialog
 import cv2
 import PIL.Image
 import PIL.ImageTk
 import numpy as np
-
+import os
 ''' Colaboradores
 
 - Lyang Leme de Medeiros
@@ -19,7 +20,7 @@ __version__ = '0.5'
 - Versão: 0.5
     - Salvar máscaras OK
     - Recuperar máscaras salvas OK
-    - Mostar resultado dos máscaras salvos na telar de RTT
+    - Mostar resultado dos máscaras salvos na telar de RTT OK
     - Salvar máscaras em arquivo
     - Recuperar máscaras de arquivos
 
@@ -50,7 +51,6 @@ class App:
         self.vmax = IntVar()
         self.vmin = IntVar()
         self.name = StringVar()
-        # self.masks = {'amarelo': [25, 255, 186, 10, 178, 0]}
         self.masks = {}
 
         # # # Aux Objects # # #
@@ -87,6 +87,17 @@ class App:
         self.btn_save = Button(window, text='Save', command=self.save)
         self.btn_rst = Button(window, text='Reset Mask Values', command=self.rst)
 
+        self.menu_bar = Menu(window)
+
+        self.file_menu = Menu(window, tearoff=0)
+        self.file_menu.add_command(label='Load', command=self.load_file)
+        self.file_menu.add_command(label='Save', command=self.save_to_file)
+        self.menu_bar.add_cascade(label='File', menu=self.file_menu)
+
+        self.help_menu = Menu(window, tearoff=0)
+        self.help_menu.add_command(label='About', command=self.show_about)
+        self.menu_bar.add_cascade(label='Help', menu=self.help_menu)
+
         # # # Posicionamento # # #
 
         self.label_RGB.grid(row=0, column=0)
@@ -106,10 +117,28 @@ class App:
         # # # Functions Calling # # #
 
         self.update()
-
+        self.window.config(menu=self.menu_bar)
         self.window.mainloop()
 
     # # # Class Functions # # #
+
+    def load_file():
+        pass
+
+    def save_to_file(self):
+        path = tkFileDialog.asksaveasfilename(
+            initialdir=os.getcwd(), title="Save file",
+            filetypes=(("Text", "*.txt"), ("All Files", "*.*")),
+            defaultextension=".txt",
+        )
+
+        file = open(path, 'w')
+        for tag, values in self.masks.items():
+            file.write(tag + ': ' + str(values) + '\n')
+        file.close()
+
+    def show_about():
+        pass
 
     def save(self):
         ''' function to save mask values '''
@@ -144,13 +173,8 @@ class App:
         # Checks if already have any mask save in dictionary
         if len(self.masks) != 0:
             for tag, value in self.masks.items():
-                blur = cv2.GaussianBlur(frame, (5, 5), 0)
-                hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-                mask = cv2.inRange(hsv, np.array(value[3:6]), np.array(value[0:3]))
+                mask = self.get_mask(frame, np.array(value[0:3]), np.array(value[3:6]))
                 rtt = self.draw_contour(mask, rtt, tag)
-        else:
-
-            pass
 
         # Convert frame to canvas obj
         if ret:
@@ -164,9 +188,7 @@ class App:
 
     def draw_contour(self, mask, res, name=''):
         # Fiding contours
-        kernel = np.ones((5, 5), np.uint8)
-        dilated = cv2.dilate(mask, kernel, iterations=1)
-        im2, contours, hierarchy = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        im2, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
         # Drawing contours
         for contour in contours:
@@ -189,22 +211,26 @@ class App:
                 cv2.circle(res, (cx, cy), 3, (255, 0, 255), -1)
         return res
 
-    def frame_prcess(self, frame):
+    def get_mask(self, frame, upper, lower):
         # Gaussian Blur on frame to reduce noise and details, it makes easyer to find especifcs contours
         blur = cv2.GaussianBlur(frame, (5, 5), 0)
-
         # Colors Spaces conversions
         hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
+        # Mask - Os pixels dentro do range de cor ficaram com valor 1 e os demais com valor 0
+        mask = cv2.inRange(hsv, lower, upper)
+        kernel = np.ones((5, 5), np.uint8)
+        edroded = cv2.erode(mask, kernel, iterations=1)
+        dilated = cv2.dilate(edroded, kernel, iterations=1)
+
+        return dilated
+
+    def frame_prcess(self, frame):
         # Variables to set color mask
         upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
         lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
-
-        # Mask - Os pixels dentro do range de cor ficaram com valor 1 e os demais com valor 0
-        mask = cv2.inRange(hsv, lower, upper)
-
+        mask = self.get_mask(frame, upper, lower)
         # Applying Mask - Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
         res = cv2.bitwise_and(frame, frame, mask=mask)
-
         res = self.draw_contour(mask, res)
 
         return res
