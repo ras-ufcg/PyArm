@@ -3,6 +3,7 @@
 
 from Tkinter import *
 import tkFileDialog
+import tkMessageBox as msgbx
 import cv2
 import PIL.Image
 import PIL.ImageTk
@@ -20,7 +21,7 @@ __version__ = '0.5'
 - Versão: 0.5
     - Salvar máscaras
     - Recuperar máscaras salvas
-    - Mostar resultado dos máscaras salvos na telar de RTT
+    - Mostar resultado dos máscaras salvos na tela de RTT
     - Salvar máscaras em arquivo
     - Recuperar máscaras de arquivos
     - Menu para auxíliar no gerenciamento de arquivos
@@ -148,6 +149,11 @@ class App:
         file.close()
 
     def show_about(self):
+        msgbx.showinfo(
+            title='About',
+            message=''' Software de visão computacional do pacote de softwares e bibliotecas VERA desenvolvido por membros e vuluntários
+            do Capítulo Estudantil IEEE RAS UFCG. '''
+        )
         pass
 
     def save(self):
