@@ -151,7 +151,7 @@ class App:
     def show_about(self):
         msgbx.showinfo(
             title='About',
-            message=''' Software de visão computacional do pacote de softwares e bibliotecas VERA desenvolvido por membros e vuluntários
+            message=''' Software de visão computacional do pacote de softwares e bibliotecas VERA desenvolvido por membros e voluntários
             do Capítulo Estudantil IEEE RAS UFCG. '''
         )
         pass
