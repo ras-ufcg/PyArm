@@ -27,6 +27,11 @@ __version__ = '0.5'
     - Menu para auxíliar no gerenciamento de arquivos
 
 '''
+'''
+NOTA:
+
+VER A COCATENAÇÃO DE STRINGS
+'''
 
 
 class App:
