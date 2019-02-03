@@ -1,0 +1,9 @@
+## Descricação dos documentos na pasta ##
+
+900-00008-Continuous-Rotation-Servo-Documentation-v2.2.pdf - Datasheet de um servo motor de um fabricante diferente, mas com rotação contínua para estudarmos o protocolo de comunicação.
+
+ATMega328.pdf - DS do microcontrolador usado no projeto.
+
+Datasheet_Servo_SG-90.pdf - DS de outro fabricante de um servo de meia rotação - 180° (Muito incopleto).
+
+FS90R-V2.0_specs.pdf - DS de outro fabricante, porém de um modelo similar ao usado no projeto com rotação contínua - 360° (também muito incompleto)

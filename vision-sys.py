@@ -1,4 +1,4 @@
-# vision-sys.py - v0.4
+# vision-sys.py
 # -*- coding: utf-8 -*-
 
 from Tkinter import *
@@ -15,6 +15,7 @@ import os
 -
 
 '''
+__author__ = 'Lyang Medeiros, '
 __version__ = '0.5'
 ''' Características da Versão (Beta)
 
