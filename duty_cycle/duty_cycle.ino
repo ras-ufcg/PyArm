@@ -7,8 +7,8 @@
  * Target: Arduino UNO
  * 
  * Datasheets:
- *    ATmega328P - $colocar link para datadheet do repositório$
- *    KC8801 - $colocar link para datadheet do repositório$
+ *    ATmega328P - https://bitbucket.org/lyangmedeiros/vera/src/master/doc/datasheets/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf
+ *    KC8801 - https://bitbucket.org/lyangmedeiros/vera/src/master/doc/datasheets/201403091840435763.zh-CN.en.pdf
  * 
  * Fontes:
  *    GreatScott! - https://www.youtube.com/watch?v=IdL0_ZJ7V2s
