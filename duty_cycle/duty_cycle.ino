@@ -37,7 +37,6 @@
 float lInf = 0.5;        // Limite inferior
 float lSup = 2.6;        // Limite Superior
 float duty = 0.5;        // Duty cycle inicial
-bool atualizar = true;   // Flag de atualização do duty - LÓGICA INVERSA
 
 void setup() 
 {
