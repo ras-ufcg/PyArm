@@ -5,7 +5,7 @@ Conjunto e bibliotecas e softwares em *Python* e *C++* para controle de braços 
 Desenvolvido por membros e voluntários do [Capítulo Estudantil IEEE RAS UFCG](https://www.facebook.com/rasufcg/)
 
 ---
-**vision-sys.py** - Python2
+**vision-sys.py** - Python 3
 
 Software para identificação e localização de objetos.
 
