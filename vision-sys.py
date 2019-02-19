@@ -1,54 +1,47 @@
-# vision-sys.py
 # -*- coding: utf-8 -*-
 
-from Tkinter import *
-import tkFileDialog
-import tkMessageBox as msgbx
+'''
+Sistema de visão computacional para caracterização e controle de braços
+robóticos baseados na plataforma Arduino.
+
+Desenvolvido por membros e voluntários da RAS UFCG
+
+Colaboradores:
+    - Lyang Leme de Medeiros
+    -
+
+Características da versão:
+    - Escrito em Python 3
+
+'''
+
+__version__ = '0.6'
+__author__ = 'Lyang Leme de Medeiros'
+
+
+from tkinter import *
+from tkinter import messagebox as msgbx
+from tkinter import filedialog
 import cv2
 import PIL.Image
 import PIL.ImageTk
 import numpy as np
 import os
-''' Colaboradores
-
-- Lyang Leme de Medeiros
--
-
-'''
-__author__ = 'Lyang Medeiros, '
-__version__ = '0.5'
-''' Características da Versão (Beta)
-
-- Versão: 0.5
-    - Salvar máscaras
-    - Recuperar máscaras salvas
-    - Mostar resultado dos máscaras salvos na tela de RTT
-    - Salvar máscaras em arquivo
-    - Recuperar máscaras de arquivos
-    - Menu para auxíliar no gerenciamento de arquivos
-
-'''
-'''
-NOTA:
-
-VER A COCATENAÇÃO DE STRINGS
-'''
 
 
 class App:
-
-    # # # Constructor Function # # #
+    ''' Classe que define, configura e gerencia os widgets '''
 
     def __init__(self, window, window_title, video_source=0):
+        ''' Função construtora da calsse App '''
 
-        # # # Window Settings # # #
-
+        # Configurações da janela
         self.window = window
         self.window.title(window_title)
         self.video_source = video_source
         self.window.geometry('750x600+600+200')
 
-        # # # Aux Variables # # #
+        # Variáveis auxiliares
 
         self.resize_factor = 0.55
         self.delay = 15
@@ -61,15 +54,15 @@ class App:
         self.name = StringVar()
         self.masks = {}
 
-        # # # Aux Objects # # #
+        # Objetos auxiliares
 
         self.vid = MyVideoCapture(self.video_source)
 
-        # # # Widgets # # #
+        # Declarações e configurações de widgets
 
         ''' Labels '''
-        self.label_RGB = Label(self.window, text='Real Time Tracking')
-        self.label_Mask = Label(self.window, text='Color Mask Veiwer')
+        self.label_RGB = Label(self.window, text='Rasteramento em tempo real')
+        self.label_Mask = Label(self.window, text='Visualizador de Máscaras')
 
         ''' Conteiners '''
         self.canvas_rgb = Canvas(self.window, width=self.vid.width * (self.resize_factor), height=self.vid.height * (self.resize_factor))
@@ -92,21 +85,21 @@ class App:
 
         ''' Misc '''
         self.name_text_box = Entry(window, textvariable=self.name)
-        self.btn_save = Button(window, text='Save', command=self.save)
-        self.btn_rst = Button(window, text='Reset Mask Values', command=self.rst)
+        self.btn_save = Button(window, text='Salvar Máscara', command=self.save)
+        self.btn_rst = Button(window, text='Resetar Máscara', command=self.rst)
 
         self.menu_bar = Menu(window)
 
         self.file_menu = Menu(window, tearoff=0)
-        self.file_menu.add_command(label='Load', command=self.load_file)
-        self.file_menu.add_command(label='Save', command=self.save_to_file)
-        self.menu_bar.add_cascade(label='File', menu=self.file_menu)
+        self.file_menu.add_command(label='Abrir', command=self.load_file)
+        self.file_menu.add_command(label='Salvar como', command=self.save_as)
+        self.menu_bar.add_cascade(label='Arquivo', menu=self.file_menu)
 
         self.help_menu = Menu(window, tearoff=0)
-        self.help_menu.add_command(label='About', command=self.show_about)
-        self.menu_bar.add_cascade(label='Help', menu=self.help_menu)
+        self.help_menu.add_command(label='Sobre', command=self.show_about)
+        self.menu_bar.add_cascade(label='Ajuda', menu=self.help_menu)
 
-        # # # Posicionamento # # #
+        # Configurações de posicionamento dos widgets
 
         self.label_RGB.grid(row=0, column=0)
         self.label_Mask.grid(row=0, column=1)
@@ -122,16 +115,18 @@ class App:
         self.btn_save.grid(row=6, column=0)
         self.btn_rst.grid(row=5, column=1)
 
-        # # # Functions Calling # # #
+        # Chamada de métodos
 
-        self.update()
-        self.window.config(menu=self.menu_bar)
-        self.window.mainloop()
+        self.update()  # função loop para atualização das imagens
+        self.window.config(menu=self.menu_bar)  # função de configuração da barra de menus
+        self.window.mainloop()  # função loop principal da janela
 
-    # # # Class Functions # # #
+    # Métodos da classe
 
     def load_file(self):
-        path = tkFileDialog.askopenfilename(title='Open')
+        ''' Carrega máscaras de um arquivo '''
+
+        path = filedialog.askopenfilename()
         file = open(path, 'r')
         for line in file.readlines():
             tag, value = line.split()[0], line.split()[1:]
@@ -142,9 +137,11 @@ class App:
                 new_values.append(int(x))
             self.masks[tag] = new_values
 
-    def save_to_file(self):
-        path = tkFileDialog.asksaveasfilename(
-            initialdir=os.getcwd(), title="Save file",
+    def save_as(self):
+        ''' Salva as mascaras da seção atual em um arquivo .txt '''
+
+        path = filedialog.asksaveasfilename(
+            initialdir=os.getcwd(),
             filetypes=(("Text", "*.txt"), ("All Files", "*.*")),
             defaultextension=".txt",
         )
@@ -155,27 +152,28 @@ class App:
         file.close()
 
     def show_about(self):
+        ''' Mostra informações sobre o aplicativo '''
+
         msgbx.showinfo(
-            title='About',
-            message=''' Software de visão computacional do pacote de softwares e bibliotecas VERA desenvolvido por membros e voluntários
-            do Capítulo Estudantil IEEE RAS UFCG. '''
-        )
-        pass
+            title='Sobre',
+            message='''Software de visão computacional desenvolvido por ''' +
+            '''membros e voluntários do Capítulo Estudantil IEEE RAS UFCG.''')
 
     def save(self):
-        ''' function to save mask values '''
+        ''' Salva a os valores da máscara no dicionário da seção '''
+
         mask_value = [
             self.hmax.get(), self.smax.get(), self.vmax.get(),
             self.hmin.get(), self.smin.get(), self.vmin.get(),
         ]
+
         self.masks[self.name.get()] = mask_value
         self.name.set('')
         self.rst()
 
-        pass
-
     def rst(self):
-        ''' function to reset mask values '''
+        ''' Reseta valores das máscaras '''
+
         self.slider_hmax.set(255)
         self.slider_smax.set(255)
         self.slider_vmax.set(255)
@@ -183,36 +181,46 @@ class App:
         self.slider_smin.set(0)
         self.slider_vmin.set(0)
 
-        pass
-
     def update(self):
-        # Get a frame from the video source and rescale it
+        ''' Pega quadros da entrada de vídeo e atualiza o App '''
+
+        # Pega quadros da entrada de vídeo
         ret, frame = self.vid.get_frame()
+
+        # Redimensiona o quadro
         frame = self.vid.rescale_frame(ret, frame, self.resize_factor)
+
+        # Aplica a máscara em tempo real de acordo com os sliders
         res = self.frame_prcess(frame)
+
+        # Converte o space color do quadro
         rtt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Checks if already have any mask save in dictionary
+        # Verifica se já existe alguma máscara no dicionário
+        # e caso exista, carrwda as máscaras no quadro de rastreamento
+        # em tempo real
         if len(self.masks) != 0:
             for tag, value in self.masks.items():
                 mask = self.get_mask(frame, np.array(value[0:3]), np.array(value[3:6]))
                 rtt = self.draw_contour(mask, rtt, tag)
 
-        # Convert frame to canvas obj
+        # Converte o quadro pra um objeto canvas
         if ret:
             self.photo_rgb = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(rtt))
             self.canvas_rgb.create_image(0, 0, image=self.photo_rgb, anchor=NW)
             self.photo_hsv = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
             self.canvas_hsv.create_image(0, 0, image=self.photo_hsv, anchor=NW)
 
-        # Loop Callback
+        # Loop
         self.window.after(self.delay, self.update)
 
     def draw_contour(self, mask, res, name=''):
-        # Fiding contours
+        ''' Encontra e desenha contorno nas áreas da resultantes da máscara '''
+
+        # Procura os contornos
         im2, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
-        # Drawing contours
+        # Desenha os contornos
         for contour in contours:
             area = cv2.contourArea(contour)
             M = cv2.moments(contour)
@@ -221,6 +229,7 @@ class App:
                 cy = int(M['m01'] / M['m00'])
                 centroid_str = '(' + str(cx) + ',' + str(cy) + ')'
 
+            # Aplica delimitação de para o tamanho das áreas
             if area > 700 and area < 60000:
                 cv2.drawContours(res, contour, -1, (150, 0, 200), 3)
                 rect = cv2.minAreaRect(contour)
@@ -234,25 +243,46 @@ class App:
         return res
 
     def get_mask(self, frame, upper, lower):
-        # Gaussian Blur on frame to reduce noise and details, it makes easyer to find especifcs contours
+        ''' Pega os valores dos sliders e aplica funções para construção da máscara '''
+
+        # Aplica um blur gaussiano ao quadro para reduzir os detalhes e o ruído.
+        # Isso deixa mais fácil encontrar contornos específicos
         blur = cv2.GaussianBlur(frame, (5, 5), 0)
-        # Colors Spaces conversions
+
+        # Conversão de space colors BGR->HSV
+        # HSV é um color space que facilita na detecçã de contornos
         hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-        # Mask - Os pixels dentro do range de cor ficaram com valor 1 e os demais com valor 0
+
+        # Os pixels dentro do range de cor ficaram com valor 1 e os demais com valor 0
         mask = cv2.inRange(hsv, lower, upper)
+
+        # Matriz para aplicação de métodos sobre o quadro
         kernel = np.ones((5, 5), np.uint8)
+
+        # Aplica eroção nos pixels com valor 1
         edroded = cv2.erode(mask, kernel, iterations=1)
+
+        # Aplica dilataçã nos pixels de valor 1
         dilated = cv2.dilate(edroded, kernel, iterations=1)
 
         return dilated
 
     def frame_prcess(self, frame):
-        # Variables to set color mask
+        ''' Aplica a máscara de acordo com os valores dos sliders '''
+
+        # Obtem os valores dos sliders de máximo
         upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
+
+        # Obtem os valores dos sliders de mínimo
         lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
+
+        # Aplica o o recorte ao quadro segundo os valores de máximo e mínimo
         mask = self.get_mask(frame, upper, lower)
-        # Applying Mask - Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
+
+        # Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
         res = cv2.bitwise_and(frame, frame, mask=mask)
+
+        # Desenha o contorno ao recorte
         res = self.draw_contour(mask, res)
 
         return res
@@ -290,4 +320,4 @@ class MyVideoCapture:
             return (ret, None)
 
 
-App(Tk(), "VERA Vision System - " + __version__, 1)
+App(Tk(), "SVC RAS - v" + __version__, 0)
