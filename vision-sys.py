@@ -289,17 +289,21 @@ class App:
 
 
 class MyVideoCapture:
+    ''' Gerencia a captura de quadros '''
+
     def __init__(self, video_source=0):
-        # Open the video source
+        """ Médoto construtor da classe """
+
         self.vid = cv2.VideoCapture(video_source)
         if not self.vid.isOpened():
             raise ValueError("Unable to open video source", video_source)
 
-        # Get video source width and height
+        # Obtem a altura e a largura do quadro capturado
         self.width = self.vid.get(cv2.CAP_PROP_FRAME_WIDTH)
         self.height = self.vid.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
     def rescale_frame(self, ret, frame, percent=75):
+        ''' Redimenciona o quadro recebido '''
         if ret:
             width = int(frame.shape[1] * percent)
             height = int(frame.shape[0] * percent)
@@ -309,10 +313,11 @@ class MyVideoCapture:
             return None
 
     def get_frame(self):
+        ''' Obtem um novo quadro da entrada de vídeo '''
+
         if self.vid.isOpened():
             ret, frame = self.vid.read()
             if ret:
-                # Return a boolean success flag and the current frame converted to BGR
                 return (ret, frame)
             else:
                 return (ret, None)
