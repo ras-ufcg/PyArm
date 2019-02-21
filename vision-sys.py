@@ -30,7 +30,7 @@ import os
 
 
 class App:
-    ''' Classe que define, configura e gerencia os widgets '''
+    ''' Define, configura e gerencia os widgets '''
 
     def __init__(self, window, window_title, video_source=0):
         ''' Função construtora da calsse App '''
