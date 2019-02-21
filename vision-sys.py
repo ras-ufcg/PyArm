@@ -11,11 +11,11 @@ Colaboradores:
     -
 
 Características da versão:
-    - Escrito em Python 3
+    - Comunicação Serial com o Arduino
 
 '''
 
-__version__ = '0.6'
+__version__ = '0.7'
 __author__ = 'Lyang Leme de Medeiros'
 
 
