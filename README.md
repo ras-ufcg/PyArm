@@ -15,3 +15,4 @@ Módulos necessários:
  - MatplotLib - (`pip install matplotlib`)
  - Pillow - (`pip install Pillow`)
  - Numpy - (`pip install numpy`)
+ - pySerial - (`pip install pyserial`)
