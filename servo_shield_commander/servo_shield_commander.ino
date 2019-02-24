@@ -50,7 +50,7 @@ void cntrlServo(char rec[])
   char conv[3];
  
   for(int i = 0; i < COMP-2; i++) conv[i] = rec[i+1];
-  
+
   int pos = atoi(conv);
     
   switch(rec[0])
