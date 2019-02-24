@@ -19,10 +19,7 @@ __version__ = '0.1'
 __author__ = 'Lyang Leme de Medeiros'
 
 from tkinter import *
-from platform import python_version
-import os
 import serial
-import time
 
 _s1Valor = 90
 _s2Valor = 90
@@ -30,7 +27,6 @@ _s3Valor = 90
 _s4Valor = 90
 _s5Valor = 90
 _s6Valor = 90
-
 
 ser = serial.Serial(timeout=0)
 ser.baudrate = 9600
@@ -82,7 +78,6 @@ s4Valor = IntVar()
 s5Valor = IntVar()
 s6Valor = IntVar()
 
-
 s1Scl = Scale(app, orient=HORIZONTAL, variable=s1Valor, label='S1', length=300, from_=0, to=180)
 s2Scl = Scale(app, orient=HORIZONTAL, variable=s2Valor, label='S2', length=300, from_=0, to=180)
 s3Scl = Scale(app, orient=HORIZONTAL, variable=s3Valor, label='S3', length=300, from_=0, to=180)
@@ -98,6 +93,9 @@ s5Scl.set(90)
 s6Scl.set(90)
 
 eviaBtn = Button(app, text='envia', command=testa)
+
+m = PanedWindow(orient=VERTICAL)
+m.pack(fill=BOTH, expand=1)
 
 s1Scl.pack()
 s2Scl.pack()
