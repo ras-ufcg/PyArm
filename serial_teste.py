@@ -1,6 +1,9 @@
 # Código para testar a recepção de dados Ardiuno -> Python3
 # -*- coding: utf-8 -*-
 
+# https://petrimaki.com/2013/04/28/reading-arduino-serial-ports-in-windows-7/
+# https://pyserial.readthedocs.io/en/latest/shortintro.html#configuring-ports-later
+
 import serial
 import time
 import os
@@ -19,9 +22,5 @@ ser.port = 'COM3'
 ser.open()
 
 while 1:
-    try:
-        print(ser.readline())
-        time.sleep(1)
-    except ser.SerialTimeoutException:
-        print('Data could not be read')
-        time.sleep(1)
+    var = input("Entre com o comando para o servo: ")
+    ser.write(var.encode())
