@@ -13,6 +13,50 @@ Colaboradores:
 Características da versão:
     - Comunicação Serial com o Arduino
 
+###########################################
+# OBS.: Lembrar de checar a porta serial. #
+###########################################
+
+###########################################
+################ PROTOCOLO ################
+
+Os servos trabalham com uma amplitude de 180
+graus. 
+
+Nesse caso estamos controlando 6 servos
+Cada uma dessas posições está numerada 
+no shield (de 1 à 6)
+
+Então para controlar o braço precisamos 
+enviar dois dados, o número do servo sobre o
+qual desejamos atuar e a posição final em 
+graus.
+
+Esses dados foram codificados dentro de um
+intero de 4 dígitos sendo o que ocupa a posição
+mais significativa resposável por informar qual
+motor deverar ser acionado e as 3 posições finais
+informam o angulo que o motor deverá atingir. 
+
+Por exemplo:
+
+Enviando o comando 1090 o sevo 1 irá para sua
+posição em 90°
+
+Enviando o comando 3150 o sevo 3 irá para sua
+posição em 150°
+
+###########################################
+################ LIGAÇÕES #################
+
+ 
+                S1 - D9
+                S2 - D10
+                S3 - D11
+                S4 - D3
+                S5 - D5
+                S6 - D6
+
 '''
 
 __version__ = '0.1'
