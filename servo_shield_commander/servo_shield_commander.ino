@@ -27,20 +27,22 @@ int aux_pos[6]; // valores de posição antigos
 void setup() 
 {
   Serial.begin(9600);
-  
- s1.attach(9, MIN_PW, MAX_PW);
- s2.attach(10, MIN_PW, MAX_PW);
- s3.attach(11, MIN_PW, MAX_PW);
- s4.attach(3, MIN_PW, MAX_PW);
- s5.attach(5, MIN_PW, MAX_PW);
- s6.attach(6, MIN_PW, MAX_PW);
 
- aux_pos[0] = s1.read();
- aux_pos[1] = s2.read();
- aux_pos[2] = s3.read();
- aux_pos[3] = s4.read();
- aux_pos[4] = s5.read();
- aux_pos[5] = s6.read();
+  TIMSK0 = 0;
+  
+  s1.attach(9, MIN_PW, MAX_PW);
+  s2.attach(10, MIN_PW, MAX_PW);
+  s3.attach(11, MIN_PW, MAX_PW);
+  s4.attach(3, MIN_PW, MAX_PW);
+  s5.attach(5, MIN_PW, MAX_PW);
+  s6.attach(6, MIN_PW, MAX_PW);
+
+  aux_pos[0] = s1.read();
+  aux_pos[1] = s2.read();
+  aux_pos[2] = s3.read();
+  aux_pos[3] = s4.read();
+  aux_pos[4] = s5.read();
+  aux_pos[5] = s6.read();
 }
 
 void loop() 
@@ -84,6 +86,8 @@ void cntrlServo(char rec[])
       break;
     case '2':
       s2.write(aux_pos[1] + aux);
+      Serial.print("Soma: ");
+      Serial.println(aux_pos[0] + aux);
       break;
     case '3':
       s3.write(aux_pos[2] + aux);

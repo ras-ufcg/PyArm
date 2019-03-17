@@ -21,22 +21,22 @@ Características da versão:
 ################ PROTOCOLO ################
 
 Os servos trabalham com uma amplitude de 180
-graus. 
+graus.
 
 Nesse caso estamos controlando 6 servos
-Cada uma dessas posições está numerada 
+Cada uma dessas posições está numerada
 no shield (de 1 à 6)
 
-Então para controlar o braço precisamos 
+Então para controlar o braço precisamos
 enviar dois dados, o número do servo sobre o
-qual desejamos atuar e a posição final em 
+qual desejamos atuar e a posição final em
 graus.
 
 Esses dados foram codificados dentro de um
 intero de 4 dígitos sendo o que ocupa a posição
 mais significativa resposável por informar qual
 motor deverar ser acionado e as 3 posições finais
-informam o angulo que o motor deverá atingir. 
+informam o angulo que o motor deverá atingir.
 
 Por exemplo:
 
@@ -49,7 +49,7 @@ posição em 150°
 ###########################################
 ################ LIGAÇÕES #################
 
- 
+
                 S1 - D9
                 S2 - D10
                 S3 - D11
