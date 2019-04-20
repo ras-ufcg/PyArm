@@ -16,7 +16,7 @@ Características da versão:
 '''
 
 __version__ = '0.7'
-__author__ = 'Lyang Leme de Medeiros'
+__author__ = '''Lyang Leme de Medeiros'''
 
 
 from tkinter import *
