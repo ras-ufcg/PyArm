@@ -11,11 +11,11 @@ Colaboradores:
     -
 
 Características da versão:
-    - Comunicação Serial com o Arduino
+    - Adicionar opção para calibração da ogrigem de coordenadas
 
 '''
 
-__version__ = '0.7'
+__version__ = '0.8'
 __author__ = '''Lyang Leme de Medeiros'''
 
 
@@ -53,6 +53,7 @@ class App:
         self.vmin = IntVar()
         self.name = StringVar()
         self.masks = {}
+        self.origem = (0, 0)
 
         # Objetos auxiliares
 
@@ -65,28 +66,44 @@ class App:
         self.label_Mask = Label(self.window, text='Visualizador de Máscaras')
 
         ''' Conteiners '''
-        self.canvas_rgb = Canvas(self.window, width=self.vid.width * (self.resize_factor), height=self.vid.height * (self.resize_factor))
-        self.canvas_hsv = Canvas(self.window, width=self.vid.width * (self.resize_factor), height=self.vid.height * (self.resize_factor))
+        self.canvas_rgb = Canvas(self.window, width=self.vid.width * (self.resize_factor),
+                                 height=self.vid.height * (self.resize_factor))
+
+        self.canvas_hsv = Canvas(self.window, width=self.vid.width * (self.resize_factor),
+                                 height=self.vid.height * (self.resize_factor))
 
         ''' H value sliders '''
-        self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable=self.hmax, label='HMax', length=300, from_=0, to=255)
+        self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable=self.hmax,
+                                 label='HMax', length=300, from_=0, to=255)
+
         self.slider_hmax.set(255)
-        self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable=self.hmin, label='HMin', length=300, from_=0, to=255)
+
+        self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable=self.hmin,
+                                 label='HMin', length=300, from_=0, to=255)
 
         ''' S value sliders '''
-        self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable=self.smax, label='SMax', length=300, from_=0, to=255)
+        self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable=self.smax,
+                                 label='SMax', length=300, from_=0, to=255)
+
         self.slider_smax.set(255)
-        self.slider_smin = Scale(self.window, orient=HORIZONTAL, variable=self.smin, label='SMin', length=300, from_=0, to=255)
+
+        self.slider_smin = Scale(self.window, orient=HORIZONTAL, variable=self.smin,
+                                 label='SMin', length=300, from_=0, to=255)
 
         ''' V value sliders '''
-        self.slider_vmax = Scale(self.window, orient=HORIZONTAL, variable=self.vmax, label='VMax', length=300, from_=0, to=255)
+        self.slider_vmax = Scale(self.window, orient=HORIZONTAL, variable=self.vmax,
+                                 label='VMax', length=300, from_=0, to=255)
+
         self.slider_vmax.set(255)
-        self.slider_vmin = Scale(self.window, orient=HORIZONTAL, variable=self.vmin, label='VMin', length=300, from_=0, to=255)
+
+        self.slider_vmin = Scale(self.window, orient=HORIZONTAL, variable=self.vmin,
+                                 label='VMin', length=300, from_=0, to=255)
 
         ''' Misc '''
         self.name_text_box = Entry(window, textvariable=self.name)
         self.btn_save = Button(window, text='Salvar Máscara', command=self.save)
         self.btn_rst = Button(window, text='Resetar Máscara', command=self.rst)
+        self.btn_calb = Button(window, text='Calibrar Origem', command=self.calibrate)
 
         self.menu_bar = Menu(window)
 
@@ -114,6 +131,7 @@ class App:
         self.name_text_box.grid(row=5, column=0)
         self.btn_save.grid(row=6, column=0)
         self.btn_rst.grid(row=5, column=1)
+        self.btn_calb.grid(row=7, column=0)
 
         # Chamada de métodos
 
@@ -181,6 +199,10 @@ class App:
         self.slider_smin.set(0)
         self.slider_vmin.set(0)
 
+    def calibrate(self):
+        ''' Coloca o centro do objeto selecionado como origem das coordenadas cartesianas '''
+        pass
+
     def update(self):
         ''' Pega quadros da entrada de vídeo e atualiza o App '''
 
@@ -203,6 +225,18 @@ class App:
             for tag, value in self.masks.items():
                 mask = self.get_mask(frame, np.array(value[0:3]), np.array(value[3:6]))
                 rtt = self.draw_contour(mask, rtt, tag)
+
+            for item in self.masks:
+                if item == "origem":
+                    self.mask_origem = self.masks[item]
+                    threshold = self.get_mask(frame, np.array(self.mask_origem[0:3]), np.array(self.mask_origem[3:6]))
+                    im2, contours, hierarchy = cv2.findContours(threshold, 1, 2)
+                    M = cv2.moments(np.array(contours))
+
+                    if (M['m00'] != 0):
+                        cx = int(M['m10'] / M['m00'])
+                        cy = int(M['m01'] / M['m00'])
+                        self.origem = (cx, cy)
 
         # Converte o quadro pra um objeto canvas
         if ret:
@@ -239,8 +273,16 @@ class App:
                 cv2.putText(res, centroid_str, (cx + 5, cy + 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1, cv2.LINE_AA)
                 if name != '':
                     cv2.putText(res, name, (cx + 5, cy + 20), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1, cv2.LINE_AA)
+
+                # Desenha um ponto no centróide do objeto
                 cv2.circle(res, (cx, cy), 3, (255, 0, 255), -1)
+                # Desenha uma linha da origem até o centroide
+                cv2.line(res, self.origem, (cx, cy), (255, 0, 0), thickness=1, lineType=8, shift=0)
         return res
+
+    def set_origin(self):
+
+        pass
 
     def get_mask(self, frame, upper, lower):
         ''' Pega os valores dos sliders e aplica funções para construção da máscara '''
@@ -325,4 +367,4 @@ class MyVideoCapture:
             return (ret, None)
 
 
-App(Tk(), "SVC RAS - v" + __version__, 0)
+App(Tk(), "SVC RAS - v" + __version__, 1)
