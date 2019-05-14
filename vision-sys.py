@@ -53,7 +53,8 @@ class App:
         self.vmin = IntVar()
         self.name = StringVar()
         self.masks = {}
-        self.origem = (0, 0)
+        self.new_origin = (0, 0)
+        self.origin = (0, 0)
 
         # Objetos auxiliares
 
@@ -201,6 +202,7 @@ class App:
 
     def calibrate(self):
         ''' Coloca o centro do objeto selecionado como origem das coordenadas cartesianas '''
+        self.origin = self.new_origin
         pass
 
     def update(self):
@@ -250,6 +252,7 @@ class App:
                 cx = int(M['m10'] / M['m00'])
                 cy = int(M['m01'] / M['m00'])
                 centroid_str = '(' + str(cx) + ',' + str(cy) + ')'
+                self.new_origin = (cx, cy)
 
             # Aplica delimitação de para o tamanho das áreas
             if area > 700 and area < 60000:
@@ -265,12 +268,8 @@ class App:
                 # Desenha um ponto no centróide do objeto
                 cv2.circle(res, (cx, cy), 3, (255, 0, 255), -1)
                 # Desenha uma linha da origem até o centroide
-                cv2.line(res, self.origem, (cx, cy), (255, 0, 0), thickness=2, lineType=8, shift=0)
+                cv2.line(res, self.origin, (cx, cy), (255, 0, 0), thickness=2, lineType=8, shift=0)
         return res
-
-    def set_origin(self):
-
-        pass
 
     def get_mask(self, frame, upper, lower):
         ''' Pega os valores dos sliders e aplica funções para construção da máscara '''
