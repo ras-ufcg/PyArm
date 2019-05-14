@@ -226,18 +226,6 @@ class App:
                 mask = self.get_mask(frame, np.array(value[0:3]), np.array(value[3:6]))
                 rtt = self.draw_contour(mask, rtt, tag)
 
-            for item in self.masks:
-                if item == "origem":
-                    self.mask_origem = self.masks[item]
-                    threshold = self.get_mask(frame, np.array(self.mask_origem[0:3]), np.array(self.mask_origem[3:6]))
-                    im2, contours, hierarchy = cv2.findContours(threshold, 1, 2)
-                    M = cv2.moments(np.array(contours))
-
-                    if (M['m00'] != 0):
-                        cx = int(M['m10'] / M['m00'])
-                        cy = int(M['m01'] / M['m00'])
-                        self.origem = (cx, cy)
-
         # Converte o quadro pra um objeto canvas
         if ret:
             self.photo_rgb = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(rtt))
@@ -277,7 +265,7 @@ class App:
                 # Desenha um ponto no centróide do objeto
                 cv2.circle(res, (cx, cy), 3, (255, 0, 255), -1)
                 # Desenha uma linha da origem até o centroide
-                cv2.line(res, self.origem, (cx, cy), (255, 0, 0), thickness=1, lineType=8, shift=0)
+                cv2.line(res, self.origem, (cx, cy), (255, 0, 0), thickness=2, lineType=8, shift=0)
         return res
 
     def set_origin(self):
