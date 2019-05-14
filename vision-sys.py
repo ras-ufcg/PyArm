@@ -251,11 +251,11 @@ class App:
             if (M['m00'] != 0):
                 cx = int(M['m10'] / M['m00'])
                 cy = int(M['m01'] / M['m00'])
-                centroid_str = '(' + str(cx) + ',' + str(cy) + ')'
                 self.new_origin = (cx, cy)
+                centroid_str = '(' + str(self.origin[0] - cx) + ',' + str(self.origin[1] - cy) + ')'
 
             # Aplica delimitação de para o tamanho das áreas
-            if area > 700 and area < 60000:
+            if area > 200 and area < 60000:
                 cv2.drawContours(res, contour, -1, (150, 0, 200), 3)
                 rect = cv2.minAreaRect(contour)
                 box = cv2.boxPoints(rect)
