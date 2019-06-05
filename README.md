@@ -17,6 +17,12 @@ Módulos necessários:
  - Numpy - (`pip install numpy`)
  - pySerial - (`pip install pyserial`)
 
+Outras Dependencias (Ubunutu/Raspian):
+
+	`sudo apt-get install -y libcblas-dev libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev  libqtgui4  libqt4-test`
+
+	`sudo apt-get install python-imaging python-imaging-tk`
+
  Caso ao tentar executar vision-sys.py receba o erro:
  
  `ModuleNotFoundError: No module named 'tkinter'`
@@ -24,3 +30,4 @@ Módulos necessários:
 Execute o seginte comando no terminal:
 
 `sudo apt-get install python3-tk`
+

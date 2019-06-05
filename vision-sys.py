@@ -354,4 +354,4 @@ class MyVideoCapture:
             return (ret, None)
 
 
-App(Tk(), "SVC RAS - v" + __version__, 1)
+App(Tk(), "SVC RAS - v" + __version__, 0)
