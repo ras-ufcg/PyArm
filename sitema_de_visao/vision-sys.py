@@ -206,7 +206,7 @@ def get_mask(frame, upper, lower):
 
 def update():
     ''' Pega quadros da entrada de vídeo e atualiza o App '''
-    global canvas_hsv, canvas_rgb, window, resize_factor, masks
+    global canvas_hsv, canvas_rgb, window, resize_factor, masks, delay
     # Pega quadros da entrada de vídeo
     ret, frame = get_frame()
 
