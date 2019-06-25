@@ -228,12 +228,12 @@ def update():
             rtt = draw_contour(mask, rtt, tag)
 
     # Converte o quadro pra um objeto canvas
+
     if ret:
         photo_rgb = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(rtt))
         canvas_rgb.create_image(0, 0, image=photo_rgb, anchor=tk.NW)
         photo_hsv = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
         canvas_hsv.create_image(0, 0, image=photo_hsv, anchor=tk.NW)
-
     # Loop
     window.after(delay, update)
 
@@ -340,17 +340,5 @@ btn_rst.grid(row=5, column=1)
 btn_calb.grid(row=7, column=0)
 
 window.config(menu=menu_bar)  # função de configuração da barra de menus
-'''
-ret, frame = get_frame()
-cv2.imshow('frame', frame)
-print(ret)
-
-while True:
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-    pass
-cam.release()
-cv2.destroyAllWindows()
-'''
 update()
 window.mainloop()
