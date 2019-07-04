@@ -340,5 +340,34 @@ btn_rst.grid(row=5, column=1)
 btn_calb.grid(row=7, column=0)
 
 window.config(menu=menu_bar)  # função de configuração da barra de menus
-update()
-window.mainloop()
+
+while True:
+    # Pega quadros da entrada de vídeo
+    ret, frame = get_frame()
+
+    # Redimensiona o quadro
+    frame = rescale_frame(ret, frame, resize_factor)
+
+    # Aplica a máscara em tempo real de acordo com os sliders
+    res = frame_prcess(frame)
+
+    # Converte o space color do quadro
+    rtt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    # Verifica se já existe alguma máscara no dicionário
+    # e caso exista, carrwda as máscaras no quadro de rastreamento
+    # em tempo real
+    if len(masks) != 0:
+        for tag, value in masks.items():
+            mask = get_mask(frame, np.array(value[0:3]), np.array(value[3:6]))
+            rtt = draw_contour(mask, rtt, tag)
+
+    # Converte o quadro pra um objeto canvas
+
+    if ret:
+        photo_rgb = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(rtt))
+        canvas_rgb.create_image(0, 0, image=photo_rgb, anchor=tk.NW)
+        photo_hsv = PIL.ImageTk.PhotoImage(image=PIL.Image.fromarray(cv2.cvtColor(res, cv2.COLOR_BGR2RGB)))
+        canvas_hsv.create_image(0, 0, image=photo_hsv, anchor=tk.NW)
+
+    window.mainloop()
