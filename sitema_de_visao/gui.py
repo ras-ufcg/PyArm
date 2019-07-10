@@ -218,6 +218,14 @@ class GUI:
         # Loop
         self.window.after(self.delay, self.update)
 
+    def pegaValorSliders(self):
+        # Obtem os valores dos sliders de máximo
+        upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
+
+        # Obtem os valores dos sliders de mínimo
+        lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
+
+        return upper, lower
 
     def draw_contour(self, mask, res, name=''):
         ''' Encontra e desenha contorno nas áreas da resultantes da máscara '''
@@ -255,11 +263,7 @@ class GUI:
     def frame_prcess(self, frame):
         ''' Aplica a máscara de acordo com os valores dos sliders '''
 
-        # Obtem os valores dos sliders de máximo
-        upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
-
-        # Obtem os valores dos sliders de mínimo
-        lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
+        upper, lower = self.pegaValorSliders()
 
         # Aplica o o recorte ao quadro segundo os valores de máximo e mínimo
         mask = self.tImg.aplicaMascara(frame, upper, lower)
@@ -270,7 +274,7 @@ class GUI:
         # Desenha o contorno ao recorte
         res = self.draw_contour(mask, res)
 
-        return res
+        return res      
 
 class TratamentoDeImagem:
 
