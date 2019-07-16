@@ -32,8 +32,7 @@ class GUI:
         self.vmin = IntVar()
         self.name = StringVar()
         self.masks = dict()
-        self.new_origin = (0, 0)
-        self.origin = (0, 0)
+        
 
         # Objetos auxiliares
 
@@ -182,7 +181,7 @@ class GUI:
 
     def calibrate(self):
         ''' Coloca o centro do objeto selecionado como origem das coordenadas cartesianas '''
-        self.origin = self.new_origin
+        self.tImg.origin = self.tImg.new_origin
         pass
 
     def update(self):
@@ -195,7 +194,7 @@ class GUI:
         frame = self.vid.rescale_frame(ret, frame, self.resize_factor)
 
         # Aplica a máscara em tempo real de acordo com os sliders
-        res = self.frame_prcess(frame)
+        res = self.processamentoDeQuadro(frame)
 
         # Converte o space color do quadro
         rtt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -205,8 +204,8 @@ class GUI:
         # em tempo real
         if len(self.masks) != 0:
             for tag, value in self.masks.items():
-                mask = self.get_mask(frame, np.array(value[0:3]), np.array(value[3:6]))
-                rtt = self.draw_contour(mask, rtt, tag)
+                mask = self.tImg.aplicaMascara(frame, np.array(value[0:3]), np.array(value[3:6]))
+                rtt = self.tImg.desenhaContorno(mask, rtt, tag)
 
         # Converte o quadro pra um objeto canvas
         if ret:
@@ -227,7 +226,53 @@ class GUI:
 
         return upper, lower
 
-    def draw_contour(self, mask, res, name=''):
+    def processamentoDeQuadro(self, frame):
+        ''' Aplica a máscara de acordo com os valores dos sliders '''
+
+        upper, lower = self.pegaValorSliders()
+
+        # Aplica o o recorte ao quadro segundo os valores de máximo e mínimo
+        mascara = self.tImg.aplicaMascara(frame, upper, lower)
+
+        # Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
+        res = cv2.bitwise_and(frame, frame, mask=mascara)
+
+        # Desenha o contorno ao recorte
+        res = self.tImg.desenhaContorno(mascara, res)
+
+        return res      
+
+class TratamentoDeImagem:
+
+    def __init__(self):
+        self.new_origin = (0, 0)
+        self.origin = (0, 0)
+
+    def aplicaMascara(self, frame, upper, lower):
+
+        # Aplica um blur gaussiano ao quadro para reduzir os detalhes e o ruído.
+        # Isso deixa mais fácil encontrar contornos específicos
+        blur = cv2.GaussianBlur(frame, (5, 5), 0)
+
+        # Conversão de space colors BGR->HSV
+        # HSV é um color space que facilita na detecção de contornos
+        hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
+
+        # Os pixels dentro do range de cor ficam com valor 1 e os demais com valor 0
+        mascara = cv2.inRange(hsv, lower, upper)
+
+        # Matriz para aplicação de métodos sobre o quadro
+        kernel = np.ones((5, 5), np.uint8)
+
+        # Aplica eroção nos pixels com valor 1
+        mascara = cv2.erode(mascara, kernel, iterations=1)
+
+        # Aplica dilataçã nos pixels de valor 1
+        mascara = cv2.dilate(mascara, kernel, iterations=1)
+
+        return mascara
+
+    def desenhaContorno(self, mask, res, name=''):
         ''' Encontra e desenha contorno nas áreas da resultantes da máscara '''
 
         # Procura os contornos
@@ -259,51 +304,6 @@ class GUI:
                 # Desenha uma linha da origem até o centroide
                 cv2.line(res, self.origin, (cx, cy), (255, 0, 0), thickness=2, lineType=8, shift=0)
         return res
-
-    def frame_prcess(self, frame):
-        ''' Aplica a máscara de acordo com os valores dos sliders '''
-
-        upper, lower = self.pegaValorSliders()
-
-        # Aplica o o recorte ao quadro segundo os valores de máximo e mínimo
-        mask = self.tImg.aplicaMascara(frame, upper, lower)
-
-        # Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
-        res = cv2.bitwise_and(frame, frame, mask=mask)
-
-        # Desenha o contorno ao recorte
-        res = self.draw_contour(mask, res)
-
-        return res      
-
-class TratamentoDeImagem:
-
-    def __init__(self):
-        pass
-
-    def aplicaMascara(self, frame, upper, lower):
-
-        # Aplica um blur gaussiano ao quadro para reduzir os detalhes e o ruído.
-        # Isso deixa mais fácil encontrar contornos específicos
-        blur = cv2.GaussianBlur(frame, (5, 5), 0)
-
-        # Conversão de space colors BGR->HSV
-        # HSV é um color space que facilita na detecção de contornos
-        hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
-
-        # Os pixels dentro do range de cor ficam com valor 1 e os demais com valor 0
-        mascara = cv2.inRange(hsv, lower, upper)
-
-        # Matriz para aplicação de métodos sobre o quadro
-        kernel = np.ones((5, 5), np.uint8)
-
-        # Aplica eroção nos pixels com valor 1
-        mascara = cv2.erode(mascara, kernel, iterations=1)
-
-        # Aplica dilataçã nos pixels de valor 1
-        mascara = cv2.dilate(mascara, kernel, iterations=1)
-
-        return mascara
 
 class MyVideoCapture:
     ''' Gerencia a captura de quadros '''
@@ -340,3 +340,5 @@ class MyVideoCapture:
                 return (ret, None)
         else:
             return (ret, None)
+
+GUI('teste')
