@@ -7,7 +7,6 @@ import PIL.ImageTk
 import numpy as np
 import os
 
-
 class GUI:
     ''' Define, configura e gerencia os widgets '''
 
@@ -341,4 +340,4 @@ class MyVideoCapture:
         else:
             return (ret, None)
 
-GUI('teste')
+GUI('RAS UFCG - SCV 0.8')
