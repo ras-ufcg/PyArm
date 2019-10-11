@@ -10,12 +10,12 @@ Colaboradores:
     - Lyang Leme de Medeiros
     -
 
-Características da versão:
-    - Adicionar opção para calibração da ogrigem de coordenadas
+Descrição do branch:
+    - Alterar os código para que possa ser usado em ambiente ROS
 
 '''
 
-__version__ = '0.8'
+__version__ = '0.8.1'
 __author__ = '''Lyang Leme de Medeiros'''
 
 
