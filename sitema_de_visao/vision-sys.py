@@ -242,7 +242,7 @@ class App:
         ''' Encontra e desenha contorno nas áreas da resultantes da máscara '''
 
         # Procura os contornos
-        im2, contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 
         # Desenha os contornos
         for contour in contours:
