@@ -21,7 +21,7 @@ import os
 def get_frame(video_source=0):
     
     '''
-    -
+    - Obtem um frame da câmera
     '''
 
     cap = cv2.VideoCapture(video_source)
@@ -38,7 +38,7 @@ def get_frame(video_source=0):
 def load_masks():
     
     '''
-    -
+    -   Carrega as máscaras de um arquivo 
     '''
 
     file = open('masks.txt', 'r')
@@ -58,7 +58,7 @@ def load_masks():
 def apply_mask(frame, color, masks):
 
     '''
-    -
+    - Aplica as máscaras num frame 
     '''
 
     blur = cv2.GaussianBlur(frame, (5, 5), 0)
@@ -75,9 +75,9 @@ def apply_mask(frame, color, masks):
 
     res = cv2.bitwise_and(frame, frame, mask=dilated)
 
-    return res, mask
+    return mask
 
-def get_points(res, mask):
+def get_points(mask):
 
     '''
     -
@@ -89,8 +89,7 @@ def get_points(res, mask):
             if (M['m00'] != 0):
                 cx = int(M['m10'] / M['m00'])
                 cy = int(M['m01'] / M['m00'])
-                
-                centroid_str = '(' + str(cx) + ',' + str(cy) + ')'
+
      
     # Aplica delimitação de para o tamanho das áreas
     if area > 200 and area < 60000:
@@ -100,9 +99,9 @@ def get_points(res, mask):
 if __name__ == '__main__':
     masks = load_masks()
     frame = get_frame()
-    res, mask = apply_mask(frame, 'blue', masks)
+    mask = apply_mask(frame, 'blue', masks)
 
-    x,y,z = get_points(res, mask)
+    x,y,z = get_points(mask)
 
     print('Ponto x:' + str(x))
     print('Ponto y:' + str(y))
