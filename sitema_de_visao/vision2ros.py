@@ -17,9 +17,9 @@ def talker():
         # Put your code here
 
         # Pegar um frame da camera
-        vs.masks = load_masks()
-        vs.frame = get_frame()
-        vs.mask = apply_mask(frame, target_color, masks)
+        masks = vs.load_masks()
+        vs.frame = vs.get_frame()
+        mask = vs.apply_mask(frame, target_color, masks)
 
         pos.x, pos,y, pos.z = vs.get_points(mask)
 
