@@ -1,5 +1,6 @@
 import rospy
 from geometry_msgs.msg import Point # Receiving in this format in kinematics
+import vision-lib as vs
 
 def talker():
     pub = rospy.Publisher('position', Point, queue_size=10)
@@ -16,13 +17,16 @@ def talker():
         # Put your code here
 
         # Pegar um frame da camera
-        ponto3D  = get_frame()
-        print("Ponto 3D: " + ponto3D)
+        vs.masks = load_masks()
+        vs.frame = get_frame()
+        vs.mask = apply_mask(frame, target_color, masks)
+
+        pos.x, pos,y, pos.z = vs.get_points(mask)
 
         # Publishing an position
-        pos.x = 10
-        pos.y = 20
-        pos.z = 30
+        #pos.x = 10
+        #pos.y = 20
+        #pos.z = 30
 
         rospy.loginfo(pos)    # Check
         pub.publish(pos)      # Publish
