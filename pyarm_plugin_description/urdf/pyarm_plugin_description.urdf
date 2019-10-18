@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="pyarm_plugin_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.00426098122565132 -0.0022432731150788 0.121249992312748"
+        rpy="0 0 0" />
+      <mass
+        value="0.0960374647687132" />
+      <inertia
+        ixx="0.000127992374265441"
+        ixy="3.91396755618805E-06"
+        ixz="-6.84507670123743E-11"
+        iyy="0.000207983638444363"
+        iyz="-4.47337776533491E-12"
+        izz="0.000137660900428952" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0.0041438 -0.12125 0.031453"
+      rpy="1.5708 0 -1.8325" />
+    <parent
+      link="base_link" />
+    <child
+      link="Link1" />
+    <axis
+      xyz="-25871 0 96596" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link1">
+    <inertial>
+      <origin
+        xyz="-0.00643461830391595 0.0172894164537123 -0.00137199474310693"
+        rpy="0 0 0" />
+      <mass
+        value="0.0680383193949221" />
+      <inertia
+        ixx="5.81331983559235E-05"
+        ixy="5.17766059437662E-06"
+        ixz="-6.41757849795525E-07"
+        iyy="5.46763949062908E-05"
+        iyz="6.24275294196729E-06"
+        izz="4.5017734228227E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="continuous">
+    <origin
+      xyz="0 0.040276 -0.013919"
+      rpy="-1.5708 1.5074 -1.5708" />
+    <parent
+      link="Link1" />
+    <child
+      link="Link2" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Link2">
+    <inertial>
+      <origin
+        xyz="-0.000130008009334437 0.0585890981948866 0.00376911727422892"
+        rpy="0 0 0" />
+      <mass
+        value="0.0643951130427438" />
+      <inertia
+        ixx="0.000107036678125075"
+        ixy="-1.51779709027189E-09"
+        ixz="2.42714408635116E-10"
+        iyy="9.10991752822536E-06"
+        iyz="2.39470813646573E-07"
+        izz="0.000111843226044037" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.254901960784314 0.92156862745098 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="continuous">
+    <origin
+      xyz="0 0.12 0"
+      rpy="-3.1416 0 -1.6225" />
+    <parent
+      link="Link2" />
+    <child
+      link="Link3" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="Link3">
+    <inertial>
+      <origin
+        xyz="0.000277871106889066 0.0392852844880935 0.0136088570847484"
+        rpy="0 0 0" />
+      <mass
+        value="0.0502682845095197" />
+      <inertia
+        ixx="5.46008836044273E-05"
+        ixy="-6.95727099744342E-08"
+        ixz="-7.11277681205904E-11"
+        iyy="9.28677690295478E-06"
+        iyz="-2.87520254246903E-07"
+        izz="5.8149015055016E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="-0.00485 0.083854 0.0137"
+      rpy="0 -0.43897 0" />
+    <parent
+      link="Link3" />
+    <child
+      link="Link4" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="Link4">
+    <inertial>
+      <origin
+        xyz="0.00504588236037307 0.0237368589705384 -0.00526462568981487"
+        rpy="0 0 0" />
+      <mass
+        value="0.016499419913512" />
+      <inertia
+        ixx="3.91220886226653E-06"
+        ixy="1.15861756603993E-08"
+        ixz="-3.98293926056706E-09"
+        iyy="2.61244501110147E-06"
+        iyz="5.7579177877693E-07"
+        izz="5.02234437044229E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="continuous">
+    <origin
+      xyz="0.005 0.033996 0"
+      rpy="2.0019 1.5708 3.0534" />
+    <parent
+      link="Link4" />
+    <child
+      link="Link5" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="Link5">
+    <inertial>
+      <origin
+        xyz="0.0268503291297064 0.00865268008786496 0.0489386208072843"
+        rpy="0 0 0" />
+      <mass
+        value="0.0420474433713372" />
+      <inertia
+        ixx="1.18088864723105E-05"
+        ixy="-3.87367265531403E-07"
+        ixz="-1.38623960570058E-06"
+        iyy="1.32293005118262E-05"
+        iyz="-1.36413012906019E-06"
+        izz="3.99156130221393E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://pyarm_plugin_description/meshes/Link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+</robot>
