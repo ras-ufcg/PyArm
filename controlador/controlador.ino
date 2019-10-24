@@ -1,6 +1,8 @@
 /*
 *
 * Código do controlador pra arduino
+* Autor: Lyang Leme de Medeiros - 23/10/2019
+* 
 */
 
 #include <Wire.h>
@@ -13,11 +15,11 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define SERVOMAX    600 // this is the 'maximum' pulse length count (out of 4096)
 #define DOF         5
 
-uint8_t servonum = 0;
 char terminator = '\n';
-int comprimento = 3, // o correto aqui é 3, mas para os testes com o serialMonitor tem que ser 4 por causa do enter.
-    contadorDeComandos = 0;
-int comandoCompleto[5];
+
+int comprimento = 3,
+    contadorDeComandos = 0,
+    comandoCompleto[DOF];
 
 
 void setup() {
@@ -37,36 +39,34 @@ void loop() {
     String entrada = Serial.readStringUntil(terminator);
     int angulo = entrada.toInt();
     
-    Serial.print("Recebi: ");
-    Serial.println(angulo);
+    if(DEBUG)Serial.print("RECEBI: ");
+    if(DEBUG)Serial.println(angulo);
     
-    Serial.print("Número de comandos recebidos até agora: ");
-    Serial.println(contadorDeComandos);
-
     comandoCompleto[contadorDeComandos++] = angulo;
 
-    if(contadorDeComandos > DOF)
+    if(DEBUG)Serial.print("Número de comandos recebidos até agora: ");
+    if(DEBUG)Serial.println(contadorDeComandos);
+
+  }
+
+  if(contadorDeComandos >= DOF)
     {
         contadorDeComandos = 0;
-        //executaComandos();
+        executaComandos();
     }
 
-    int pulselength = map(angulo, 0, 180, SERVOMIN, SERVOMAX);
-    pwm.setPWM(15, 0, pulselength);
+}
+
+
+void executaComandos()
+{
+  for(int i=0; i<DOF; i++)
+  {
+    if(DEBUG)Serial.print("EXECUTANDO: ");
+    if(DEBUG)Serial.println(comandoCompleto[i]);
+    
+    int pulselength = map(comandoCompleto[i], 0, 180, SERVOMIN, SERVOMAX);
+    pwm.setPWM(i, 0, pulselength);
+    delay(1000);
   }
-
-
-
-/*
-  for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) {
-    pwm.setPWM(0, 0, pulselen);
-  }
-
-  delay(500);
-  for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--) {
-    pwm.setPWM(0, 0, pulselen);
-  }
-
-  delay(500);
-*/
 }
