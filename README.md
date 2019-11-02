@@ -1,4 +1,4 @@
-## VERY EASY ROBOTIC ARM - VERA
+## EEG - PICK and PLACE
 ---
 Conjunto e bibliotecas e softwares em *Python* e *C++* para controle de braços robóticos baseados na plataforma *Arduino*.
 
