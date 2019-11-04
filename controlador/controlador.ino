@@ -173,7 +173,7 @@ void poseInicial()
 
 void fechaGarra()
 {
-  pwm.setPWM(13, 0, map(80, 0, 180, SERVOMIN, SERVOMAX));
+  pwm.setPWM(13, 0, map(170, 0, 180, SERVOMIN, SERVOMAX));
 }
 
 void abreGarra()

@@ -1,6 +1,6 @@
 #define JOINTS 5
 
-char message[JOINTS*3];
+byte message[JOINTS];
 int joints[JOINTS];
 int total;
 byte bufferSize;
@@ -12,14 +12,12 @@ void setup() {
 }
 
 void loop() {
-  bufferSize = Serial.readBytesUntil(255, message, JOINTS*3);
+  bufferSize = Serial.readBytesUntil(255, message, JOINTS);
 
   total = 0;
+
   for (int i = 0; i < JOINTS; i++){
-    joints[i] = (atoi(message) % int (pow(1000,i+1))) / pow(1000,i);
+    joints[i] = message[i];
     Serial.write(joints[i]);
-    total += joints[i];
   }
-  
-  //Serial.write(total);
 }
