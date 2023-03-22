@@ -18,7 +18,7 @@ mode = args.mode
 
 now = datetime.now()
 myfolder = os.path.abspath(os.getcwd())
-
+print(myfolder)
 current_time = now.strftime("%H:%M:%S")
 current_day = datetime.today().strftime('%Y-%m-%d')
 
@@ -30,14 +30,14 @@ else:
     text = current_day+" : "+current_time+" - "
     msg = "In registred for "+name+" at "+current_day+" - "+current_time
 
-f = open('./'+name+'.txt','a+')
+f = open('./punchClock/'+name+'.txt','a+')
 f.write(text)
 f.close()
 print(msg)
 
 PATH_OF_GIT_REPO = myfolder+'/.git'  # make sure .git folder is properly configured
 repo = Repo(PATH_OF_GIT_REPO)
-repo.git.add('./'+name+'.txt')
+repo.git.add('./punchClock/'+name+'.txt')
 repo.index.commit(msg)
-origin = repo.remote(name='braco')
+origin = repo.remote(name='origin')
 origin.push()
