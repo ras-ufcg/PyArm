@@ -21,7 +21,7 @@ Após o clone você terá a pasta do punchClock na pasta do projeto no seu diret
 > python3 punchClock/punchClock.py SEU-NOME in 
 
 #### Para registrar a saída:
-> python3 punchClock/punchClock.py SEU-NOME SEU NOME out
+> python3 punchClock/punchClock.py SEU-NOME out
 
 > Descreva o que você fez dentro daquele ponto.
 
