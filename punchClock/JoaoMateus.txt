@@ -1,1 +1,2 @@
-2023-03-29 : 13:10:58 - 13:11:37 >> teste
+2023-03-29 : 13:10:58 - 13:11:37 >> Iniciando teste de punchClock
+2023-04-03 : 22:40:54 - 23:42:22 >> Pesquisando e fazendo a Segunda missão do OpenCv
