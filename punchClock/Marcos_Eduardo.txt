@@ -2,3 +2,5 @@
 2023-03-26 : 14:12:13 - 15:51:06 >> Revisão de visao computacional, capitulo 3 da apostila.
 2023-03-29 : 20:00:30 - 20:00:47 >> teste do programa PunchClock.
 2023-03-30 : 22:21:41 - 00:30:12 >> Revisão da visão computacional, capitulo 4, 5 e 8 da apostila.
+2023-04-02 : 22:25:26 - 00:40:15 >> Revisão do segundo desafio.
+2023-04-03 : 23:46:51 - 00:14:16 >> Revisão sobre mascaras.
