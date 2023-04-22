@@ -5,4 +5,4 @@
 2023-04-02 : 22:25:26 - 00:40:15 >> Revisão do segundo desafio.
 2023-04-03 : 23:46:51 - 00:14:16 >> Revisão sobre mascaras.
 2023-04-16 : 09:44:07 - 11:42:36 >> Leitura e anotações do artigo pibic da UFCG
-2023-04-18 : 13:34:35 - 15:54:40 >> Aplicações dos 14 eletrodos e o artigo "A non-invasive EEG-based control of a robot arm for reaching movements".
+2023-04-18 : 13:34:35 - 15:54:40 >> Aplicações dos 14 eletrodos e o artigo "Noninvasive Electroencephalogram Based Control ofa Robotic Arm for Writing Task Using Hybrid BCI System - Published 1 June 2017".
