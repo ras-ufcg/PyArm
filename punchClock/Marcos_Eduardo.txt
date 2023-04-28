@@ -9,4 +9,3 @@
 2023-04-22 : 20:52:07 - 22:13:12 >> Iniciando o Artigo "Noninvasive Electroencephalogram Based Control of a Robotic Arm for Reach and Grasp Tasks - 2016"
 2023-04-24 : 06:18:53 - 07:04:15 >> Finalizando o estudo do artigo acima.
 2023-04-24 : 07:04:59 - 09:06:02 >> Leitura do artigo sobre manipuladores robóticos.
-2023-04-28 : 06:04:59 - 06:06:02 >> teste
