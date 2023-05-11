@@ -1,0 +1,2 @@
+2023-05-11 : 14:19:20 -  >> Teste punchclock-1
+2023-05-03 : 15:06:00 -  >> Registro no Notion - Estudo de aruco e aplicação em Raspbarry PI
