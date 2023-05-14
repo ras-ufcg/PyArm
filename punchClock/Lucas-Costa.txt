@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 2023-04-27 : 09:15:39 - 09:56:04 >> Leitura do TCC "CONTROLE DE DISPOSITIVOS ROBÓTICOS USANDO VISÃO COMPUTACIONAL" (ANDRÉ BRAZ DA SILVA, LEONARDO CAETANO DOS SANTOS)
 2023-04-28 : 12:48:26 - 14:15:27 >> Leitura do TCC "SISTEMA DE CLASSIFICAÇÃO E SEPARAÇÃO DE PEÇAS POR VISÃO COMPUTACIONAL USANDO O BRAÇO ROBÓTICO COMAU NS 16 1.65"
 2023-04-30 : 07:41:08 - 08:20:26 >> Realização de reunião com os membros da visão computacional e estudo do código
 2023-05-01 : 21:00:02 - 22:27:51 >> Unificação dos sliders (max e min)
+=======
+2023-04-27 : 09:15:39 - 09:56:04 >> Leitura do TCC "CONTROLE DE DISPOSITIVOS ROBÃ“TICOS USANDO VISÃƒO COMPUTACIONAL" (ANDRÃ‰ BRAZ DA SILVA, LEONARDO CAETANO DOS SANTOS)
+2023-04-28 : 12:48:26 - 14:15:27 >> Leitura do TCC "SISTEMA DE CLASSIFICAÃ‡ÃƒO E SEPARAÃ‡ÃƒO DE PEÃ‡AS POR VISÃƒO COMPUTACIONAL USANDO O BRAÃ‡O ROBÃ“TICO COMAU NS 16 1.65"
+2023-04-30 : 07:41:08 - 08:20:26 >> RealizaÃ§Ã£o de reuniÃ£o com os membros da visÃ£o computacional e estudo do cÃ³digo
+2023-05-01 : 21:00:02 - 22:27:51 >> UnificaÃ§Ã£o dos sliders (max e min)
+>>>>>>> f052d2081ddae1907231c3a584aa1c9e74b0191c
