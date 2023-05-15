@@ -1,6 +1,6 @@
-## EEG - PICK and PLACE
+##  PyArm e EEG - PICK and PLACE -
 ---
-Conjunto e bibliotecas e softwares em *Python* e *C++* para controle de braços robóticos baseados na plataforma *Arduino*.
+Conjunto e bibliotecas e softwares em *Python* e *C++* para controle de manipuladores robóticos baseados na plataforma *Arduino*.
 
 Desenvolvido por membros e voluntários do [Capítulo Estudantil IEEE RAS UFCG](https://www.facebook.com/rasufcg/)
 
