@@ -3,16 +3,12 @@
 '''
 Sistema de visão computacional para caracterização e controle de braços
 robóticos baseados na plataforma Arduino.
-
 Desenvolvido por membros e voluntários da RAS UFCG
-
 Colaboradores:
     - Lyang Leme de Medeiros
     -
-
 Descrição do branch:
     - Alterar os código para que possa ser usado em ambiente ROS
-
 '''
 
 __version__ = '0.8.1'
@@ -29,10 +25,11 @@ import numpy as np
 import os
 
 
+
 class App:
     ''' Define, configura e gerencia os widgets '''
 
-    def __init__(self, window, window_title, video_source=0):
+    def __init__(self, window, window_title, video_source=1):
         ''' Função construtora da calsse App '''
 
         # Configurações da janela
@@ -45,7 +42,7 @@ class App:
 
         self.resize_factor = 0.55
         self.delay = 15
-        self.hmax = IntVar()
+        #self.hmax = IntVar()
         self.hmin = IntVar()
         self.smax = IntVar()
         self.smin = IntVar()
@@ -74,33 +71,34 @@ class App:
                                  height=self.vid.height * (self.resize_factor))
 
         ''' H value sliders '''
-        self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable=self.hmax,
-                                 label='HMax', length=300, from_=0, to=255)
+        #self.slider_hmax = Scale(self.window, orient=HORIZONTAL, variable=self.hmax,
+                                #label='HMax', length=300, from_=0, to=255)
 
-        self.slider_hmax.set(255)
+        #self.slider_hmax.set(255)
 
         self.slider_hmin = Scale(self.window, orient=HORIZONTAL, variable=self.hmin,
-                                 label='HMin', length=300, from_=0, to=255)
+                                label='H', length=300, from_=0, to=255)
 
         ''' S value sliders '''
         self.slider_smax = Scale(self.window, orient=HORIZONTAL, variable=self.smax,
-                                 label='SMax', length=300, from_=0, to=255)
+                                label='SMax', length=300, from_=0, to=255)
 
         self.slider_smax.set(255)
 
         self.slider_smin = Scale(self.window, orient=HORIZONTAL, variable=self.smin,
-                                 label='SMin', length=300, from_=0, to=255)
+                                label='S', length=300, from_=0, to=255)
 
         ''' V value sliders '''
         self.slider_vmax = Scale(self.window, orient=HORIZONTAL, variable=self.vmax,
-                                 label='VMax', length=300, from_=0, to=255)
+                                label='Vmax', length=300, from_=0, to=255)
 
         self.slider_vmax.set(255)
 
         self.slider_vmin = Scale(self.window, orient=HORIZONTAL, variable=self.vmin,
-                                 label='VMin', length=300, from_=0, to=255)
+                                label='V', length=300, from_=0, to=255)
 
         ''' Misc '''
+        #self.number_mask_box = Entry(window, textvariable=self.name)
         self.name_text_box = Entry(window, textvariable=self.name)
         self.btn_save = Button(window, text='Salvar Máscara', command=self.save)
         self.btn_rst = Button(window, text='Resetar Máscara', command=self.rst)
@@ -116,29 +114,63 @@ class App:
         self.help_menu = Menu(window, tearoff=0)
         self.help_menu.add_command(label='Sobre', command=self.show_about)
         self.menu_bar.add_cascade(label='Ajuda', menu=self.help_menu)
+        
 
         # Configurações de posicionamento dos widgets
+        
+
+# Carrega a imagem com PIL
+        img_h= PIL.Image.open("hue.png")
+        img_s = PIL.Image.open("s.png")
+        img_v = PIL.Image.open("v.png")
+
+# Converte a imagem para um objeto de imagem Tkinter
+        img_tk_h = PIL.ImageTk.PhotoImage(img_h)
+        img_tk_s = PIL.ImageTk.PhotoImage(img_s)
+        img_tk_v = PIL.ImageTk.PhotoImage(img_v)
+
+# Cria um widget Label para exibir a imagem
+        label_img_h = Label(window, image=img_tk_h)
+        label_img_s = Label(window, image=img_tk_s)
+        label_img_v = Label(window, image=img_tk_v)
+
+# Posiciona o widget Label na janela
+        label_img_h.grid(row=2, column=0)
+        label_img_s.grid(row=4, column=0)
+        label_img_v.grid(row=6, column=0)
 
         self.label_RGB.grid(row=0, column=0)
         self.label_Mask.grid(row=0, column=1)
         self.canvas_rgb.grid(row=1, column=0)
         self.canvas_hsv.grid(row=1, column=1)
-        self.slider_hmax.grid(row=2, column=1)
-        self.slider_hmin.grid(row=2, column=0)
-        self.slider_smax.grid(row=3, column=1)
-        self.slider_smin.grid(row=3, column=0)
-        self.slider_vmax.grid(row=4, column=1)
-        self.slider_vmin.grid(row=4, column=0)
-        self.name_text_box.grid(row=5, column=0)
-        self.btn_save.grid(row=6, column=0)
-        self.btn_rst.grid(row=5, column=1)
-        self.btn_calb.grid(row=7, column=0)
+        #self.slider_hmax.grid(row=2, column=1)
+        self.slider_hmin.grid(row=3, column=0)
+        #self.slider_smax.grid(row=3, column=1)
+        self.slider_smin.grid(row=5, column=0)
+        #self.slider_vmax.grid(row=7, column=1)
+        self.slider_vmin.grid(row=7, column=0)
+        self.name_text_box.grid(row=2, column=1)
+        self.btn_save.grid(row=3, column=1)
+        self.btn_rst.grid(row=4, column=1)
+        self.btn_calb.grid(row=5, column=1)
+        #label.img_tk.grid(row=2, column=1)
+        #self.number_mask_box.grid(row=7, column=1)
 
         # Chamada de métodos
 
         self.update()  # função loop para atualização das imagens
         self.window.config(menu=self.menu_bar)  # função de configuração da barra de menus
         self.window.mainloop()  # função loop principal da janela
+        
+        # carrega a imagem usando o PIL
+        #img = Image.open('h.png')
+
+            # converte a imagem para o formato do tkinter
+        #img_tk = ImageTk.PhotoImage(img)
+
+        # exibe a imagem em um widget Label
+        #label = Label(window, image=img_tk)
+        #label.pack()
 
     # Métodos da classe
 
@@ -182,7 +214,8 @@ class App:
         ''' Salva a os valores da máscara no dicionário da seção '''
 
         mask_value = [
-            self.hmax.get(), self.smax.get(), self.vmax.get(),
+            #self.hmax.get(),
+            self.smax.get(), self.vmax.get(),
             self.hmin.get(), self.smin.get(), self.vmin.get(),
         ]
 
@@ -193,9 +226,9 @@ class App:
     def rst(self):
         ''' Reseta valores das máscaras '''
 
-        self.slider_hmax.set(255)
-        self.slider_smax.set(255)
-        self.slider_vmax.set(255)
+        #self.slider_hmax.set(255)
+        #self.slider_smax.set(255)
+        #self.slider_vmax.set(255)
         self.slider_hmin.set(0)
         self.slider_smin.set(0)
         self.slider_vmin.set(0)
@@ -300,13 +333,20 @@ class App:
         ''' Aplica a máscara de acordo com os valores dos sliders '''
 
         # Obtem os valores dos sliders de máximo
-        upper = np.array([self.hmax.get(), self.smax.get(), self.vmax.get()])
+        blur = cv2.GaussianBlur(frame, (5, 5), 0)
+        hsv = cv2.cvtColor(blur, cv2.COLOR_BGR2HSV)
+        upper = np.array([hsv[0][0][0]+10, 255, 255])
 
         # Obtem os valores dos sliders de mínimo
         lower = np.array([self.hmin.get(), self.smin.get(), self.vmin.get()])
 
         # Aplica o o recorte ao quadro segundo os valores de máximo e mínimo
         mask = self.get_mask(frame, upper, lower)
+        
+        # Adiciona o valor fixo de matiz (H) aos limites máximo e mínimo
+        h_value = 0 # define o valor fixo de matiz (H)
+        upper = np.append([h_value], upper)
+        lower = np.append([h_value], lower)
 
         # Recorta os pixels com valores dentro do range da máscara fazendo um and bit a bit com a mask
         res = cv2.bitwise_and(frame, frame, mask=mask)
