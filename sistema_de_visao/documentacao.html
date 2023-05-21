@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Documentação do Código de Visão Computacional</title>
+</head>
+<body>
+    <h1>Sistema de Visão Computacional</h1>
+    <p>Sistema de visão computacional para caracterização e controle de braços robóticos baseados na plataforma Arduino.</p>
+    <p>Desenvolvido por membros e voluntários da RAS UFCG.</p>
+    <p>Versão: 0.8.1</p>
+    <p>Autor: Lyang Leme de Medeiros</p>
+    
+    <h2>Classe App</h2>
+    <p>A classe <code>App</code> define, configura e gerencia os widgets da aplicação.</p>
+    
+    <h3>Método __init__(self, window, window_title, video_source=1)</h3>
+    <p>O método construtor da classe <code>App</code> inicializa os atributos da janela e dos widgets.</p>
+    
+    <h3>Método load_file(self)</h3>
+    <p>O método <code>load_file</code> carrega máscaras de um arquivo.</p>
+    
+    <h3>Método save_as(self)</h3>
+    <p>O método <code>save_as</code> salva as máscaras da seção atual em um arquivo .txt.</p>
+    
+    <h3>Método show_about(self)</h3>
+    <p>O método <code>show_about</code> mostra informações sobre o aplicativo.</p>
+    
+    <h3>Método save(self)</h3>
+    <p>O método <code>save</code> salva os valores da máscara no dicionário da seção.</p>
+    
+    <h3>Método rst(self)</h3>
+    <p>O método <code>rst</code> reseta os valores das máscaras.</p>
+    
+    <h3>Método calibrate(self)</h3>
+    <p>O método <code>calibrate</code> coloca o centro do objeto selecionado como origem das coordenadas cartesianas.</p>
+    
+    <h3>Método update(self)</h3>
+    <p>O método <code>update</code> pega quadros da entrada de vídeo e atualiza a aplicação.</p>
+    
+    <h3>Método draw_contour(self, mask, res, name='')</h3>
+    <p>O método <code>draw_contour</code> encontra e desenha contornos nas áreas resultantes da máscara.</p>
+    
+    <h3>Método get_mask(self, frame, upper, lower)</h3>
+    <p>O método <code>get_mask</code> pega os valores dos sliders e aplica funções para construção da máscara.</p>
+    
+    <h3>Método frame_prcess(self, frame)</h3>
+    <p>O método <code>frame_prcess</code> aplica a máscara de acordo com os valores dos sliders.</p>
+</body>
+</html>
